@@ -10,7 +10,7 @@ using namespace std;
 const int maxn = 100;
 
 //本质上是个BFS
-int a[] = {1, 2, 3, 4, 5, 6, 7, 8};
+int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
 struct Node
 {
@@ -73,7 +73,7 @@ vector<list<Node*>> BFS(Node *bfs_head)
     list<Node*> li;
     list<Node*> li_st;
     li_st.push_back(bfs_head);
-    ret.push_back(li_st);
+    //ret.push_back(li_st);
     li.push_back(bfs_head);
     int count = 0;
     int pre = 1;
@@ -87,7 +87,10 @@ vector<list<Node*>> BFS(Node *bfs_head)
         else if(dep[pos] == pre)
         {
             cout<<"In one level!"<<pre<<endl;
-            li_st.push_back(&node[pos]);
+            Node* temp = li.front();
+            li_st.push_back(temp);
+            cout<<"List size:"<<li_st.size()<<endl;
+
         }
         else
         {
@@ -95,6 +98,9 @@ vector<list<Node*>> BFS(Node *bfs_head)
             ret.push_back(li_st);
             list<Node*> new_li_st;
             li_st = new_li_st;
+            Node* temp = li.front();
+            li_st.push_back(temp);
+            cout<<"List size:"<<li_st.size()<<endl;
         }
 
         pre = dep[pos];
@@ -116,14 +122,28 @@ vector<list<Node*>> BFS(Node *bfs_head)
             dep[count] = pre + 1;
         }
     }
+    ret.push_back(li_st);
     return ret;
 }
 
 int main()
 {
     init();
-    create_minmal_binary_tree(0, 7, -1);
+    create_minmal_binary_tree(0, 8, -1);
     vector<list<Node*>> a = BFS(&node[0]);
+    cout<<"Size a: "<<a.size()<<endl;
+    for(int i = 0; i < a.size(); i++)
+    {
+        list<Node*> b = a[i];
+        cout<<"Size :"<<i<<" "<<b.size()<<endl;
+    }
     list<Node*> b = a[1];
+    
+    //迭代器是指针
+    list<Node*>::iterator It;
+    for(It = b.begin(); It != b.end(); It++)
+    {
+        cout<<(*It)->key<<endl;
+    }
     return 0;
 }
