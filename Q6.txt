@@ -1,0 +1,50 @@
+脑洞趣题系列：
+Add airthmetic operators (plus, minus, times, divide) to make the following expression true:
+3 1 3 6 = 8. You can use any parentheses you'd like.
+(3 + 1) / (3 / 6) = 8.
+
+There is an 8 * 8 chess board in which two diagonally opposite cornors have been cut off. You are given 31 dominos, 
+and a single domino can cover exactly two squares. Can you use the 31 dominos to cover the entire board?
+Prove your answer (by providing an example, or showing why it's impossible).
+证明这一点需要从另一个角度看待问题，我们对整个棋盘着色，相邻的棋盘格颜色不同。这样，我们会发现去掉的两个棋盘格是同色的。
+此时剩下32个红色和30个黄色棋盘，每次放上一个新的多米诺骨牌，一定会去掉1个红色棋盘格和1个黄色棋盘格。
+这样就会剩下两个红色棋盘格，而红色棋盘格不可能相连，因此此题的答案是不能。
+
+You have a five quart jug and a three quart jug, and an unlimited supply of water (but no measuring cuos). 
+How would you come up with exactly four quarts of water? NOTE: The jugs are oddly shaped, such that filling up exactly 'half' of the jug would be impossible.
+先将五升水装满，然后倒在三升水中，剩下两升，将三升水倒掉，装入两升水，然后再将五升水装满，倒满装了两升水的瓶子，这样倒满时，五升水里只剩四升水了。
+
+A bunch of men are on an island. A genie comes down and gathers everyone together and places a magical hat on some people's heads
+(i.e., at least one person has a hat). The hat is magical: It can be seen by other people, but not by the wearer of the hat himself.
+To remove the hat, those (and only those who have a hat) must dunk themselves underwater at eactly midnight.
+If there are n people and c hats, how long does it take the men to remove the hats?
+The men cannot tell each other (in any way) that they have a hat.
+蓝眼睛问题 需要c天 而且都是在第c天去除帽子的 因为所有的人都知道他们有帽子 这是前提
+如果第一天没人去dunk，那么戴帽子的人，看到其他人都没有去dunk，因此知道自己是戴帽子的人。
+而假如有两个戴帽子的人，戴帽子的人互相可以看到一个戴帽子的人，因此第一天没人去dunk，那么只能看到一个戴帽子的人，就知道自己也是戴帽子的人了。
+
+There is a building of 100 floors. If an egg drops from the Nth floor or above  it will break.
+If it's dropped from any floor below, it will not break. You're given 2 eggs. Find N, 
+while minimizing the number of drops for the worst case.
+最直观的思路是一个鸡蛋逐层的往下掉，找到摔碎的那一层。
+更好的思路是 因为目前有两个鸡蛋 因此先让一个鸡蛋跳着走 然后第一个鸡蛋摔碎时 让第二个鸡蛋在跳跃的空间中逐层往下跳
+而这个问题需要我们找到在最坏情况下最少的次数x
+假设第一个鸡蛋从y层下落，碎了，那么第二个鸡蛋从头找起，那么此时1 + y - 1 < = x
+如果第一个鸡蛋从y层下落，没碎，那么第二个鸡蛋就选择在x的基础上增加z下落，此时新的高度应当为多少呢？2 + z - 1 < = x
+以此类推
+最后将这些高度合起来，应当大于等于100
+那么得到一个不等式：
+y + z + ... >= 100
+x + (x - 1) + ... + 1 > = y + z + ... >= 100
+x = 14
+因此第一个鸡蛋的位置为：14、27、39、50、60、69、77、84、90、95、99、100。
+
+There are one hundred closed lockers in a hallway. A man begins by opening all one hundred lockers.
+Next, he closes every second locker. Then he goes to every third locker and close it if it is open or opens it if it is closed
+(e.g., he toggles  every third locker). After his one hundredth pass in a hallway, in which he toggles only locker number one hundred,
+how many lockers are open?
+其实就是反转几次的问题，反转奇数次，就开着，翻转偶数次，就关着。
+什么样的数可以翻转奇数次呢？一个数可以由另外两个数相乘得出，那么在从1到100翻转的过程中，必然会有两次翻转。
+如果一个数是平方数，那么对于它的开方项，只翻转一次，也就是最后和为奇数次。
+因此小于100的平方数对应的锁将会是open状态。
+1 4 9 16 25 36 49 64 81 100
