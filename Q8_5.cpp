@@ -6,6 +6,7 @@
 
 using namespace std;
 
+//注意要加入一个match项，不能随便插入右括号，必须左括号的数量大于右括号的数量时，才能插入右括号
 void parentheses(char *a, int n, int match, int pos)
 {
     if(match == 0 && n == 0)

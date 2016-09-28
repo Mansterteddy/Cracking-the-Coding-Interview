@@ -46,8 +46,12 @@ void mul(int c[2][2], int a[2][2], int b[2][2])
     c[1][1] = t[3];
 }
 
+
 void pow(int s[2][2], int a[2][2], int n)
 {
+    //Review！
+    //实在妙不可言的一段代码，应时时review
+    //以后递归n次，都应当使用这个思路
     while(n > 0)
     {
         if(n & 1) mul(s, s, a);

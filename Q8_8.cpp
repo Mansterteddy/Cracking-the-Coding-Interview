@@ -3,12 +3,17 @@
 
 using namespace std;
 
-void print(int a[4][4])
+//八皇后问题一共92种
+//使用传统的暴力枚举法，一共2^64种可能，算不完
+int num = 0;
+
+void print(int a[8][8])
 {
+    num++;
     cout<<"The chess is: "<<endl;
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
-        for(int j = 0; j < 4; j++)
+        for(int j = 0; j < 8; j++)
         {
             cout<<a[i][j]<<" ";
         }
@@ -16,21 +21,22 @@ void print(int a[4][4])
     }
 }
 
-bool check(int a[4][4], int row, int col)
+bool check(int a[8][8], int row, int col)
 {
     bool flag = true;
     if(row == 0) return true;
     for(int i = 0; i < row; i++)
     {
-        for(int j = 0; j < 4; j++)
+        for(int j = 0; j < 8; j++)
         {
             if(a[i][j] == 1 && j == col)
             {
                 flag = false;
             }
-            else if(i == row -1 && a[i][j] == 1)
+            else if(a[i][j] == 1)
             {
-                if(j == col - 1 || j == col + 1)
+                //if(j == col - 1 || j == col + 1)
+                if((row - i) == (col - j) || (row - i) == (j - col))
                 {
                     flag = false;
                 }
@@ -40,25 +46,27 @@ bool check(int a[4][4], int row, int col)
     return flag;
 }
 
+//对角线指的是一整条线 而非相邻的四个元素
 
-void assign(int a[4][4], int row)
+
+void assign(int a[8][8], int row)
 {
-    if(row == 3)
+    if(row == 7)
     {
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 8; i++)
         {
-            bool flag = check(a, 3, i);
+            bool flag = check(a, 7, i);
             if(flag)
             {
-                a[3][i] = 1;
+                a[7][i] = 1;
                 print(a);
-                a[3][i] = 0;
+                a[7][i] = 0;
             }
         }
         return;
     }
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
         if(check(a, row, i))
         {
@@ -73,8 +81,10 @@ void assign(int a[4][4], int row)
 
 int main()
 {
-    //int a[8][8] = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
-    int a[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+    int a[8][8] = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
+    //int a[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+    //memset(col_check, 0, sizeof(col_check));
     assign(a, 0);
+    cout<<"Solution's number is: "<<num<<endl;
     return 0;
 }

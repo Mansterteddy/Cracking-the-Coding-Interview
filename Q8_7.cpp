@@ -7,6 +7,7 @@ using namespace std;
 
 int number = 0;
 
+//核心是对cents排序，不要出现重复情况
 void represent(vector<int> *vec, int res)
 {
     if(res < 0) return;

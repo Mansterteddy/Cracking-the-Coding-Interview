@@ -110,7 +110,7 @@ bool get_path(int m, int n)
     return suc;
 }
 
-
+//递归调用是通过栈实现的，具体实现可以参考Q3_4，汉诺塔的堆栈实现。
 //打印所有路径
 void print_paths(int m, int n, int M, int N, int len)
 {
@@ -119,6 +119,7 @@ void print_paths(int m, int n, int M, int N, int len)
     p.x = n;
     p.y = m;
     //记录整个路程，当重新寻找path时，会被覆盖，事实上len记录当前走到第几步
+    //因为此方法只能右走或者下走，因此走到终点，无论哪种路线，步数都是一样的，因此可以使用数组来记录路径。
     vp[len] = p;
     len++;
     if(m == M && n == N)
