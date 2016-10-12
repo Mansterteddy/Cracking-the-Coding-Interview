@@ -32,6 +32,8 @@ bool cmp(person p1, person p2)
 //从0到第i个元素 第i个元素最大长度为 小于i元素的第一个元素的最大长度 + 1
 int lis(person p[], int n)
 {
+    if(n == 0) return 0;
+    if(n == 1) return 1;
     d[0] = 1;
     for(int i = 1; i < n; i++)
     {
@@ -45,23 +47,46 @@ int lis(person p[], int n)
         }
         d[i] = max;
     }
+    int res = d[0];
+    for(int i =0; i < n; i++)
+    {
+        if(d[i] > res) res = d[i];
+    }
 
-    return d[n - 1];
+    return res;
 }
 
-
+int lis_1(person p[], int n){
+    int k = 1;
+    d[0] = p[0].w;
+    for(int i=1; i<n; ++i){
+        if(p[i].w >= d[k-1]) d[k++] = p[i].w;
+        else{
+            int j;
+            for(j=k-1; j>=0 && d[j]>p[i].w; --j);//用二分可将复杂度降到O(nlogn)
+            d[j+1] = p[i].w;
+        }
+    }
+    for(int i = 0; i <= k; i++)
+    {
+        cout<<d[i]<<endl;
+    }
+    return k;
+}
 
 int main()
 {
     int height[] = {65, 70, 56, 75, 60, 68};
-    int weight[] = {100, 150, 90, 190, 95, 110};
+    int weight[] = {56, 60, 65, 68, 70, 75};
     int len = sizeof(height) / sizeof(height[0]);
     for(int i = 0; i < len; i++)
     {
         p[i].h = height[i];
-        p[i].w = height[i];
+        p[i].w = weight[i];
     }
     sort(p, p + len, cmp);
     cout<<lis(p, len)<<endl;
+    cout<<lis_1(p, len)<<endl;
     return 0;
 }
+
