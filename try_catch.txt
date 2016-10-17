@@ -1,0 +1,255 @@
+引言
+
+异常，让一个函数可以在发现自己无法处理的错误时抛出一个异常，希望它的调用者可以直接或者间接处理这个问题。而传统错误处理技术，检查到一个局部无法处理的问题时:
+
+1.终止程序(例如atol,atoi,输入NULL，会产生段错误，导致程序异常退出,如果没有core文件，找问题的人一定会发疯)
+
+2.返回一个表示错误的值(很多系统函数都是这样，例如malloc，内存不足，分配失败，返回NULL指针)
+
+3.返回一个合法值，让程序处于某种非法的状态(最坑爹的东西，有些第三方库真会这样)
+
+4.调用一个预先准备好在出现"错误"的情况下用的函数。
+
+第一种情况是不允许的，无条件终止程序的库无法运用到不能当机的程序里。第二种情况，比较常用，但是有时不合适，例如返回错误码是int，每个调用都要检查错误值，极不方便，也容易让程序规模加倍(但是要精确控制逻辑，我觉得这种方式不错)。第三种情况，很容易误导调用者，万一调用者没有去检查全局变量errno或者通过其他方式检查错误，那是一个灾难，而且这种方式在并发的情况下不能很好工作。至于第四种情况，本人觉得比较少用，而且回调的代码不该多出现。
+
+使用异常，就把错误和处理分开来，由库函数抛出异常，由调用者捕获这个异常，调用者就可以知道程序函数库调用出现错误了，并去处理，而是否终止程序就把握在调用者手里了。
+
+但是，错误的处理依然是一件很困难的事情，C++的异常机制为程序员提供了一种处理错误的方式，使程序员可以更自然的方式处理错误。
+
+异常实战入门
+
+假设我们写一个程序，把用户输入的两个字符串转换为整数，相加输出，一般我们会这么写
+
+char *str1 = "1", *str2 = "2";
+int num1 = atoi(str1);
+int num2 = atoi(str2);
+printf("sum is %d\n", num1 + num2);
+
+ 
+
+假设用户输入的是str1,str2,如果str1和str2都是整数类型的字符串，这段代码是可以正常工作的，但是用户的输入有可能误操作，输入了非法字符，例如
+
+char *str1 = "1", *str2 = "a";
+int num1 = atoi(str1);
+int num2 = atoi(str2);
+printf("sum is %d\n", num1 + num2);
+
+这个时候结果是1，因为atoi(str2)返回0。
+
+如果用户输入是这样:
+
+char *str1 = "1", *str2 = NULL;
+int num1 = atoi(str1);
+int num2 = atoi(str2);
+printf("sum is %d\n", num1 + num2);
+
+那么这段代码会出现段错误，程序异常退出。
+
+atoi我觉得是一个比较危险的函数，如果在一个重要系统中，调用者不知情，传入了一个NULL字符，程序就异常退出了，导致服务中断，或者传入非法字符，结果返回0，代码继续走下去，在复杂的系统中想要定位这个问题，真是很不容易。
+
+所以比较合适的方式，是我们用异常处理改造一个安全的atoi方法,叫parseNumber。
+
+class NumberParseException {};
+bool isNumber(char * str) {
+     using namespace std;
+     if (str == NULL) 
+        return false;
+     int len = strlen(str);
+     if (len == 0) 
+        return false;
+     bool isaNumber = false;
+     char ch;
+     for (int i = 0; i < len; i++) {
+         if (i == 0 && (str[i] == '-' || str[i] == '+')) 
+            continue;
+         if (isdigit(str[i])) {
+            isaNumber = true;
+         } else {
+           isaNumber = false;
+           break;
+         }
+     }
+     return isaNumber;
+}
+int parseNumber(char * str) throw(NumberParseException) {
+    if (!isNumber(str)) 
+       throw NumberParseException();
+    return atoi(str);
+}
+
+
+上述代码中NumberParseException是自定义的异常类，当我们检测的时候传入的str不是一个数字时，就抛出一个数字转换异常，让调用者处理错误，这比传入NULL字符串，导致段错误结束程序好得多，调用者可以捕获这个异常，决定是否结束程序，也比传入一个非整数字符串，返回0要好，程序出现错误，却继续无声无息执行下去。
+
+于是我们之前写的代码可以改造如下:
+
+
+    char *str1 = "1", *str2 = NULL;
+    try {
+        int num1 = parseNumber(str1);
+        int num2 = parseNumber(str2);
+        printf("sum is %d\n", num1 + num2);
+    } catch (NumberParseException) {
+        printf("输入不是整数\n");
+    }
+
+
+这段代码的结果是打印出"输入不是整数".假设这段代码是运行在一个游戏统计系统中，系统需要定时从大量文件中统计大量用户进入游戏频道1和游戏频道2的次数，str1代表进入游戏频道1的次数，str2表示进入频道2的次数，如果不是使用异常，当输入是NULL程序会导致整个系统宕机，当输入是非法整数，计算结果全部是错误的，当时程序仍然无声无息"正确执行"。
+
+输入非法，抛出NumberParseException,即使调用者没有考虑输入是非法的，例如是:
+
+    char *str1 = "1", *str2 = "12,";
+    int num1 = parseNumber(str1);
+    int num2 = parseNumber(str2);
+    printf("sum is %d\n", num1 + num2);
+
+就算调用者比较粗心，没有捕获异常,程序运行中会抛出NumberParseException，程序宕机，会留下coredump文件，调用者通过"gdb 程序名 coredump文件",查看程序宕机时的堆栈，就知道程序运行中，出现了非法整数字符，那么他就很快知道问题所在，会学乖，把上述代码改成
+
+
+    char *str1 = "1", *str2 = NULL;
+    try {
+        int num1 = parseNumber(str1);
+        int num2 = parseNumber(str2);
+        printf("sum is %d\n", num1 + num2);
+    } catch (NumberParseException) {
+        printf("输入不是整数\n"); 
+        //打印文件的路径,行号，str1,str2等信息足够自己去定位问题所在 
+    }
+
+
+这样，下次程序出现问题时，调用者就可以定位问题所在了，这就是异常的错误处理方式，把错误的发现(parseNumber)和错误的处理(游戏统计代码)分开。
+
+这里介绍了异常的抛出和捕获，还有异常的使用场景，接下来就开始一步步讲解C++异常。
+
+异常的描述
+
+函数和函数可能抛出的异常集合作为函数声明的一部分是有价值的，例如
+
+void f(int a) throw (x2,x3);
+
+表示f()只能抛出两个异常x2,x3,以及这些类型派生的异常，但不会抛出其他异常。如果f函数违反了这个规定，抛出了x2,x3之外的异常,例如x4,那么当函数f抛出x4异常时，
+会转换为一个std::unexpected()调用，默认是调用std::terminate(),通常是调用abort()。
+
+如果函数不带异常描述，那么假定他可能抛出任何异常。例如:
+
+int f();  //可能抛出任何异常
+
+不带任何异常的函数可以用空表表示:
+
+int g() throw (); // 不会抛出任何异常
+
+捕获异常
+
+捕获异常的代码一般如下:
+
+try {
+    throw E();
+}
+catch (H h) {
+     //何时我们可以能到这里呢
+}
+
+1.如果H和E是相同的类型
+
+2.如果H是E的基类
+
+3.如果H和E都是指针类型，而且1或者2对它们所引用的类型成立
+
+4.如果H和E都是引用类型，而且1或者2对H所引用的类型成立
+
+从原则上来说，异常在抛出时被复制，我们最后捕获的异常只是原始异常的一个副本，所以我们不应该抛出一个不允许复制的异常。
+
+此外，我们可以在用于捕获异常的类型加上const，就像我们可以给函数加上const一样，限制我们，不能去修改捕捉到的那个异常。
+
+还有,捕获异常时如果H和E不是引用类型或者指针类型，而且H是E的基类，那么h对象其实就是H h = E(),最后捕获的异常对象h会丢失E的附加携带信息。
+
+ 
+
+异常处理的顺序
+我们之前写的parseNumber函数会抛出NumberParseException,这个函数只是判断是否数字才抛出异常，但是没有考虑，但这个字符串表示的整数太大，溢出，抛出异常Overflow.表示如下:
+
+class NumberParseException {};
+class Overflow : public NumberParseException {};
+
+假设我们parseNumber函数已经为字符串的整数溢出做了检测，遇到这种情况，会抛出Overflow异常，那么异常捕获代码如下:
+
+
+    char *str1 = "1", *str2 = NULL;
+    try {
+        int num1 = parseNumber(str1);
+        int num2 = parseNumber(str2);
+        printf("sum is %d\n", num1 + num2);
+    } 
+    catch (Overflow) {
+        //处理Overflow或者任何由Overflow派生的异常
+    }
+    catch (NumberParseException) {
+         //处理不是Overflow的NumberParseException异常
+    }
+
+
+
+异常组织这种层次结构对于代码的健壮性很重要，因为库函数发布之后，不可能不加入新的异常，就像我们的parseNumber,第一次发布时只是考虑输入是否一个整数的错误，第二次发布时就考虑了判断输入的一个字符串作为整数是否太大溢出,对于一个函数发布之后不再添加新的异常，几乎所有的库函数都不能接受。
+
+如果没有异常的层次结构，当函数升级加入新的异常描述时，我们可能都要修改代码，为每一处调用这个函数的地方加入对应的catch新的异常语句,这很让你厌烦，程序员也很容易忘记把某个异常加入列表，导致这个异常没有捕获，异常退出。
+
+而有了异常的层次结构，函数升级之后，例如我们的parseNumber加入了Overflow异常描述，函数调用者只需要在自己感兴趣的调用场景加入catch(Overflow),并做处理就行了，如果根据不关心Overflow错误，甚至不用修改代码。
+
+未捕获的异常
+
+如果抛出的异常未被捕捉,那么就会调用函数std::terminate(),默认情况是调用abort,这对于大部分用户是正确选择，特别是排错程序错误的阶段(调用abort会产生coredump文件，coredump文件的使用可以参考博客的"学会用core dump调试程序错误")。
+
+如果我们希望在发生未捕获异常时，保证清理工作，可以在所有真正需要关注的异常处理之外，再在main添加一个捕捉一切的异常处理，例如:
+
+
+int main() {
+    try {
+        //...
+     }
+    catch (std::range_error) {
+        cerr << "range error\n";
+     } catch (std::bad_alloc) {
+        cerr << "new run out of memory\n";
+     } catch (...) {
+       //..
+     }
+}
+
+
+这样就可以捕捉所有的异常，除了那些在全局变量构造和析构的异常(如果要获得控制，唯一方式是set_unexpected)。
+其中catch(...)表示捕捉所有异常，一般会在处理代码做一些清理工作。
+
+重新抛出
+
+当我们捕获了一个异常，却发现无法处理，这种情况下，我们会做完局部能够做的事情，然后再一次抛出这个异常,让这个异常在最合适的地方地方处理。例如:
+
+
+void downloadFileFromServer() {
+    try {
+          connect_to_server();
+          //...
+     } 
+      catch (NetworkException) {
+           if (can_handle_it_completely) {
+               //处理网络异常,例如重连
+           } else {
+                throw;
+            }
+       }
+}
+
+这个函数是从远程服务器下载文件，内部调用连接到远程服务器的函数，但是可能存在着网络异常，如果多次重连无法成功，就把这个网络异常抛出，让上层处理。
+
+重新抛出是采用不带运算对象的throw表示，但是如果重新抛出，又没有异常可以重新抛出，就会调用terminate();
+
+假设NetworkException有两个派生异常叫FtpConnectException和HttpConnectException，调用connect_to_server时是抛出HttpConnectException,那么调用downloadFileFromServer仍然能捕捉到异常HttpConnectException。
+
+标准异常
+
+到了这里，你已经基本会使用异常了，可是如果你是函数开发者，并需要把函数给别人使用，在使用异常时，会涉及到自定义异常类，但是C++标准已经定义了一部分标准异常，请尽可能复用这些异常，标准异常参考http://www.cplusplus.com/reference/std/stdexcept/
+
+虽然C++标准异常比较少，但是作为函数开发者，尽可能还是复用c++标准异常，作为函数调用者就可以少花时间去了解的你自定义的异常类，更好的去调用你开发的函数。
+
+总结
+
+本文只是简单从异常的使用场景，再介绍异常的基本使用方法，一些高级的异常用法没有罗列，详细资料可以参考c++之父的C++程序设计语言的异常处理。
+

@@ -1,0 +1,19 @@
+#include <algorithm>
+
+处在c++ STL中
+sort(begin, end)，表示一个范围
+
+还可以编写自己的cmp函数
+
+bool cmp(int a, int b)
+{
+    return a < b;
+} 
+
+//若改为return a > b; 则变成升序排列
+
+甚至可以自定义不同对象的cmp函数形式
+bool cmp(string a, string b)
+{
+    return a[0] < b[0];
+}
