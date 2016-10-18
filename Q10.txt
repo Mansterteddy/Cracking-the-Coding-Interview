@@ -1,0 +1,24 @@
+1. You have a basketball hoop and someone says that you can play 1 of 2 games.
+Game #1: You get one shot to make the hoop
+Game #2: You get three shot and you have to make 2 of 3 shots
+If p is the probability of making aparticular shot, for which values of p should you pick one game or the other?
+
+对于游戏1，赢的概率是p
+对于游戏2，赢的概率是p^2 + p * (1 - p) * p + (1 - p) * p * p = 3p^2 - 2 * p^3
+假如1/2 < p < 1, 游戏2赢的概率大
+假如0 < p < 1/2, 游戏1赢的概率大
+
+2. These are three ants on different vertices of a triangle.
+What is the probabili1 of collision (between any two or all of them)
+if they start walking on the sides of the triangle?
+Similarly find the probabili1 of collision with 'n' ants on an 'n' vertex polygon.
+
+3. Givn two lines on a Cartesian plane, determine whether the two lines would intersect.
+
+4. Write a method to implement *, -, / operations. You should use only the + operator.
+
+5. Given two squares on a two dimensional plane, find a line that would cut these two squares in half.
+
+6. Given a two dimensional graph with points on it, find a line which passes the most number of points.  
+
+7. Design an algorithm to find the kth number such that the only prime factors are 3, 5, 7.
