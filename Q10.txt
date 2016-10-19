@@ -9,16 +9,51 @@ If p is the probability of making aparticular shot, for which values of p should
 假如0 < p < 1/2, 游戏1赢的概率大
 
 2. These are three ants on different vertices of a triangle.
-What is the probabili1 of collision (between any two or all of them)
+What is the probability of collision (between any two or all of them)
 if they start walking on the sides of the triangle?
-Similarly find the probabili1 of collision with 'n' ants on an 'n' vertex polygon.
+Similarly find the probability of collision with 'n' ants on an 'n' vertex polygon.
+
+对于三角形来说：1/2 * 1/2 * 3 or 1 - (1 / 2)^3 * 2
+
+对于n边形来说：1 - (1 / 2)^n * 2
 
 3. Givn two lines on a Cartesian plane, determine whether the two lines would intersect.
+如果斜率相等且截距不相等，那么一定相交。
+还要考虑假如某条直线垂直于x轴，此时斜率不存在。
+假如斜率不是整数，而是浮点数，那么表示两个数不相等是让它们作差，然后它们的差小于一个足够小的数epsilon
 
 4. Write a method to implement *, -, / operations. You should use only the + operator.
+只针对整数情况
+减法：a - b 先转成负数-b 然后相加
+乘法：a * b for循环相加 先忽略正负号 等到最后同号为正 异号为负
+除法：a / b 首先考虑b不能为0 当b为0时 抛出异常或者返回无穷大 for循环相减 直到小于0前 先忽略正负号 等到最后同号为正 异号为负
 
 5. Given two squares on a two dimensional plane, find a line that would cut these two squares in half.
 
+找两个square的中点的连线
+穿过square中点的线总能平分square和rectangle的面积
+
 6. Given a two dimensional graph with points on it, find a line which passes the most number of points.  
+可以从最直观的思路开始，选择任意两个点，做连线，然后看剩下的点，哪个点在这条直线上，时间复杂度 O(n^3)
+或者以每两个点计算出一条直线，然后将它们放入以直线为键，以数量为值得hash map中，以此来求经过点数最多的直线。
+但是在计算机中，Key相等就是个问题，如果我们用斜率和截距表达直线，由于都是浮点数，那么相等的概念就变成了数值之间的差距小于eps，但是hash map并不支持这样的操作
+这样的后果是平面上任何两个点之间形成的直线都不是同一条直线。
+我们只能重写hash函数
 
 7. Design an algorithm to find the kth number such that the only prime factors are 3, 5, 7.
+while循环可以解决这个问题，但是显然很慢，正常的思路是看可不可以用3、5、7直接乘出来。
+所有的prime factors 只有3、5和7的数都可以表达为3^a * 5^b * 7^c 
+一种简单的思路是：
+对于已经列出的数，依次去乘以3、5、7，得到一组数，然后找出最小的同时还没有被列出的数，加入到整个列表中，重复以上步骤，直到第k个数，时间复杂度为：O(n^2)
+这种思路的问题在于重复计算，避免了重复计算，就能得到较快的时间复杂度。
+算法：
+1、初始化结果res = 1和队列q3, q5, q7
+2、分别向q3, q5, q7三个队列中插入1 * 3, 1 * 5, 1 * 7
+3、求出三个队列的队头元素中最小的那个x，更新结果res = x
+4、如果x在：
+    q3中，那么从q3中移除x，并向q3, q5, q7中插入3 * x, 5 * x, 7 * x
+    q5中，那么从q5中移除x，并向q5, q7中插入5 * x, 7 * x 
+    q7中，那么从q7中移除x，并向q7中插入7 * x 
+5、重复步骤3-5，直到找到第k个数。
+也就是说q3中只有3的倍数，q5中只有3和5的倍数，q7中只有3、5和7的倍数（一定有3&7，5&7和7，一定没有3&5），所以不存在重复运算。
+
