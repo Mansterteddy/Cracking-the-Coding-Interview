@@ -17,3 +17,28 @@ bool cmp(string a, string b)
 {
     return a[0] < b[0];
 }
+
+针对vector<type_name>这类，起点和终点要设置成迭代器的形式。
+sort(v1.begin(), v1.end(), cmp);
+
+
+qsort(数组名，元素个数，元素占用的空间(sizeof)，比较函数) 
+比较函数满足 满足int cmp(const void *a, const void *b)的形式
+
+当a b关系为 > < = 时，分别返回正值 负值 零 （或者相反）。
+
+例子：
+int compare(const void *a,const void *b)
+ {
+   return *(int*)b-*(int*)a;   
+ }
+ int main()
+ {
+   int a[20]={2,4,1,23,5,76,0,43,24,65},i;
+   for(i=0;i<20;i++)
+   cout<<a[i]<<endl;
+   qsort((void *)a,20,sizeof(int),compare);
+   for(i=0;i<20;i++)
+   cout<<a[i]<<endl;
+   return 0;
+ }
