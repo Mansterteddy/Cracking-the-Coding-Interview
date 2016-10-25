@@ -1,0 +1,197 @@
+
+C++中map容器提供一个键值对容器，map与multimap差别仅仅在于multiple允许一个键对应多个值。   
+
+一、map的说明  
+  1   头文件 
+  #include   <map> 
+  
+  2   定义 
+  map<string,   int>   my_Map; 
+  或者是typedef     map<string,   int>   MY_MAP; 
+  MY_MAP   my_Map; 
+  
+  3   插入数据 
+  (1)   my_Map["a"]   =   1; 
+  (2)   my_Map.insert(map<string,   int>::value_type("b",2)); 
+  (3)   my_Map.insert(pair<string,int>("c",3)); 
+  (4)   my_Map.insert(make_pair<string,int>("d",4)); 
+  
+  4   查找数据和修改数据 
+  (1)   int   i   =   my_Map["a"]; 
+            my_Map["a"]   =   i; 
+  (2)   MY_MAP::iterator   my_Itr; 
+            my_Itr.find("b"); 
+            int   j   =   my_Itr->second; 
+            my_Itr->second   =   j; 
+  不过注意，键本身是不能被修改的，除非删除。 
+  
+  5   删除数据 
+  (1)   my_Map.erase(my_Itr); 
+  (2)   my_Map.erase("c"); 
+  还是注意，第一种情况在迭代期间是不能被删除的，道理和foreach时不能删除元素一样。 
+  
+  6   迭代数据 
+  for   (my_Itr=my_Map.begin();   my_Itr!=my_Map.end();   ++my_Itr)   {} 
+  
+  7   其它方法 
+  my_Map.size()               返回元素数目 
+  my_Map.empty()       判断是否为空 
+  my_Map.clear()           清空所有元素 
+  可以直接进行赋值和比较：=,   >,   >=,   <,   <=,   !=   等等 
+  
+  更高级的应用查帮助去吧，^_^;
+
+二/map的举例
+
+要求: 将mymap中itemstruct   的a大于100的项删除  
+struct   itemstruct 
+  { 
+            int   a; 
+            char   b[20]; 
+  }; 
+  map<string,   itemstruct   >     mymap. 
+  
+解答1:
+  #include   <iostream> 
+  #include   <ctime> 
+  #include   <map> 
+  using   namespace   std; 
+  typedef   struct   itemstruct 
+  { 
+            int   a; 
+            char   b[20]; 
+  }itemS; 
+  itemS   s[4]   =   {{102,"what"}, 
+                          {33,   "hello"}, 
+                          {198,"world"}, 
+                          {45,   "c++"} 
+                      };; 
+  
+  
+  int     main() 
+  { 
+            map<string,   itemS>     mymap; 
+            string   str[4]   =   {"1st","2nd","3rd","4th"}; 
+            for(int   i   =   0;   i<4;   i++) 
+            { 
+                 mymap.insert(make_pair(str[i],   s[i])); 
+            } 
+            
+            map<string,itemS>::iterator   it; 
+            for(it=mymap.begin();   it!=mymap.end(); it++) 
+            { 
+               if(it->second.a >100){ 
+                  i=mymap.erase(it);  ----->正确
+    mymap.erase(it);     ----->it失效..
+        }
+            }
+  //first是Key, second是value;
+            for(it = mymap.begin();  it!=mymap.end(); it++) 
+            { 
+                          cout<<it->first<<"   "<<it->second.a<<"   "<<it->second.b<<endl; 
+            } 
+          system("pause"); 
+          return   0; 
+  }
+
+解答2：
+#include<map> 
+  #include<iterator> 
+  #include<string> 
+  #include<iostream> 
+  #include<cstring> 
+  using   namespace   std; 
+  struct   itemstruct 
+  { 
+            int   a; 
+            char   b[20]; 
+            itemstruct(int   t,char*str) 
+    { 
+    a=t; 
+    strcpy(b,str); 
+    } 
+  }; 
+  int   main() 
+  { 
+  map<string,itemstruct>mymap; 
+  mymap.insert(make_pair("a",itemstruct(10,"hanzhou"))); 
+  mymap.insert(make_pair("ab",itemstruct(20,"fuzhou"))); 
+  mymap.insert(make_pair("abc",itemstruct(30,"zhengzhou"))); 
+  mymap.insert(make_pair("abcd",itemstruct(200,"wuhan"))); 
+  mymap.insert(make_pair("abcde",itemstruct(150,"kunming"))); 
+  mymap.insert(make_pair("abcdef",itemstruct(50,"xiamen"))); 
+  map<string,itemstruct>::iterator   it=mymap.begin(); 
+  while(it!=mymap.end()) 
+  { 
+  if((it->second).a>100)mymap.erase(it++); 
+  else   it++; 
+  } 
+  it=mymap.begin(); 
+  while(it!=mymap.end()) 
+  { 
+  cout<<it->first<<"   "<<(it->second).a<<"   "<<(it->second).b<<endl; 
+  it++; 
+  } 
+  system("PAUSE"); 
+  return   0; 
+  }
+
+解答3：
+  for(map<string,   itemstruct>::iterator   i   =   mymap.begin();   i   !=   mymap.end();) 
+  { 
+          if(i->second.a   >   100) 
+                  i   =   mymap.erase(i); 
+          else 
+                  ++i; 
+  } 
+
+解答4: VC6中编译map编译出错的解决方法
+Warnings similar to the following are generated even if you use the warning pragma to disable the warning: warning C4786: 'std::rb_tree<CAiSpanningTree<State,std::less<State>>::TransClosureNode, CAiSpanningTree<State,std::less<State>>::TransClosureNode,std::ident<Cai SpanningTree<State,std::less<State>>::TransClosureNode,CAiSpanningTree<S tate,std::less<State>>::TransClosureNode>,std::less<CAiSpanningTree<Stat e,std::less<State>>::TransClosureNode>>' : identifier was truncated to '255' characters in the debug information
+
+
+解决code 加在stdafx.h的头文件处:
+
+   #pragma warning(disable:4786)
+
+begin()返回一个迭代器　指向map的第一个元素
+
+clear() 删除map中的所有元素
+
+count() 返回map中键值等于key的元素个数
+
+empty() 如果map为空 返回true 否则 返回false
+
+end() 返回一个迭代器 指向map的尾部
+
+equal_range() 返回一个pair，包含两个迭代器，一个指向第一个键值为key的元素
+另一个指向最后一个键值为key的元素
+
+erase() 删除map中的元素
+
+find() 返回一个迭代器 指向键值为key的元素 如果没找到 就返回指向末尾迭代器
+
+get_allocator() 返回map的配置器
+
+insert() 插入元素
+
+key_comp() 返回一个比较key的函数
+
+lower_bound() 返回一个迭代器 指向map中键值大于等于key的第一个元素
+
+max_size() 返回map能够保存的最大元素个数
+
+rbegin() 返回指向map尾部的逆向迭代器
+
+rend() 返回一个指向map头部的逆向迭代器
+
+size() 返回map中保存的元素个数
+
+swap() 交换两个map中的元素
+
+upper_bound() 返回一个迭代器 指向map中键值大于key的第一个元素
+
+value_comp() 返回一个比较元素value的函数
+
+
+
+
