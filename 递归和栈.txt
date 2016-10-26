@@ -1,0 +1,258 @@
+数学归纳法
+
+数学归纳法(mathematical induction)是一种数学证明方法，常用于证明命题(命题是对某个现象的描述)在自然数范围内成立。
+随着现代数学的发展，自然数范围内的证明实际上构成了许多其他领域(比如数学分析)的基础，所以数学归纳法对于整个数学体系至关重要。
+
+ 
+
+数学归纳法本身非常简单。如果我们想要证明某个命题对于自然数n都成立，那么:
+
+第一步 证明命题对于n = 1成立。
+
+第二步 假设命题对于n成立，n为任意自然数，证明在此假设下，命题对于n+1成立。
+
+命题得证
+
+ 
+
+想一下上面的两个步骤。它们实际上意味着，命题对于n = 1成立 -> 命题对于n = 2成立 -> 命题对于n = 3成立……直到无穷。
+因此，命题对于任意自然数都成立。这就好像多米诺骨牌，我们确定n的倒下会导致n + 1的倒下，然后推倒第一块骨牌，就能保证任意骨牌的倒下。
+
+
+
+我们来看一下使用数学归纳法来证明高斯求和公式:
+
+
+
+n为任意自然数。
+ 
+
+我们的命题是: 高斯求和公式对于任意自然数n都成立。
+
+下面为数学归纳法的证明步骤:
+
+第一步 n = 1，等式左边(1的累加)为1，右边(右边公式代入n=1)也为1，等式两边相等，等式成立，因此命题对于 n = 1 成立。
+
+第二步 假设上述公式对于任意n成立， 即1到n的累加为n*(n+1)/2
+
+
+    那么，对于n+1，等式的左边(从1到n+1的累加)等于n*(n+1)/2 + (n+1)，即(n+1)*(n+2)/2，
+
+                  等式的右边的n用n+1代替，成为(n+1)*(n+2)/2，
+
+    等式两边相等，等式成立。因此，当假设命题对于n成立时，命题对于n+1成立。
+
+因此，命题得证。
+
+ 
+
+递归
+
+递归(recursion)是计算机中的重要概念，它是指一个计算机程序调用其自身。
+为了保证计算机不陷入死循环，递归要求程序有一个能够达到的终止条件(base case)。比如下面的程序，是用于计算高斯求和公式:
+
+/*
+ * Gauss summation
+ */
+
+int f(n)
+{
+    if (n == 1) { 
+        return 1;  // base case
+    }
+    else {
+        return f(n-1) + n;  // induction
+    }
+}
+
+在程序中规定了f(1)的值，以及f(n)和f(n-1)的关系。这正是数学归纳法思想的体现。
+想要得到f(n)，必须计算f(n-1)；想要f(n-1)，必须计算f(n-2)……直到f(1)。由于我们已经知道了f(1)的值，我们就可以填补前面所有的空缺，最终返回f(n)的值。
+
+递归是数学归纳法在计算机中的程序实现。使用递归设计程序的时候，我们设置base case，并假设我们会获得n-1的结果，并实现n的结果。
+这就好像数学归纳法，我们只关注初始和衔接，而不需要关注具体的每一步。
+
+ 
+
+栈
+
+递归是用栈(stack)数据结构实现的。正如我们上面所说的，计算f(n)，需要f(n-1)；计算f(n-1)，需要f(n-2)……。
+我们在寻找到f(1)之前，会有许多空缺: f(n-1)的值什么？ f(n-2)的值是什么? …… f(2)的值是什么？f(1)的值是什么? 我们的第一个问题是f(n)是什么，
+结果，这个问题引出下一个问题，再下一个问题…… 每个问题的解答都依赖于下一个问题，直到我们找到第一个可以回答的问题: f(1)的值是什么?
+
+我们用栈来保存我们在探索过程中的疑问。C语言中，函数的调用已经是用栈记录离场情境和返回地址。递归是函数对自身的调用，所以很自然的，
+递归用栈来保存我们的“疑问” 。
+
+
+
+我们假设栈向下增长。首先，我们调用f(100)，那么当执行到
+return f(n-1) + n; 
+
+f(100)暂停执行，并记录当前的状态，比如n的值，当前执行到的位置。随后调用f(99)，栈增加一个frame，直到调用f(98) ... 栈不断增长，直到f(1)。
+f(1)得到结果1，并返回给f(2)。f(1)栈frame删除，转移到f(2)frame情境中继续执行
+return f(n-1) + n; 
+
+然后返回给f(3) ... 直到f(99)返回给f(100)，并执行
+return f(n-1) + n; 
+
+返回f(100)的值，得到结果。
+
+上述过程是C编译器自动完成的。在实现递归算法时，也可以自行手动实现栈。这样可以得到更好的运行效率。
+
+
+首先通过反汇编语言，我们来了解一下最简单的递归函数与栈之间的关系。
+
+如何获得反汇编语言，在visual studio 2008中，在debug环境下，在debug/windows/disassembly中可以查看反汇编之后的语言。现在我们看一下阶乘n！的实现
+
+其C语言实现代码如下
+
+ 01.#include <stdio.h>  
+02.int factorial(int n);  
+03.int main(void)  
+04.{  
+05.    int fact;  
+06.    fact = factorial(4);  
+07.    printf("%d\n",fact);  
+08.    return 0;  
+09.}  
+10.int factorial(int n)  
+11.{  
+12.    if (1 == n )  
+13.        return 1;  
+14.    return n * factorial(n - 1);  
+15.  
+16.}  
+
+ 其反汇编之后的语言如下 
+
+主程序main
+
+
+ 01.int main(void)  
+02.{  
+03.00DB1FD0  push        ebp    
+04.00DB1FD1  mov         ebp,esp   
+05.00DB1FD3  sub         esp,0CCh   
+06.00DB1FD9  push        ebx    
+07.00DB1FDA  push        esi    
+08.00DB1FDB  push        edi    
+09.00DB1FDC  lea         edi,[ebp-0CCh]   
+10.00DB1FE2  mov         ecx,33h   
+11.00DB1FE7  mov         eax,0CCCCCCCCh   
+12.00DB1FEC  rep stos    dword ptr es:[edi]   
+13.    int fact;  
+14.    fact = factorial(4);  
+15.00DB1FEE  push        4      
+16.00DB1FF0  call        @ILT+475(_factorial) (0DB11E0h)   
+17.00DB1FF5  add         esp,4   
+18.00DB1FF8  mov         dword ptr [fact],eax   
+19.    printf("%d\n",fact);  
+20.00DB1FFB  mov         esi,esp   
+21.00DB1FFD  mov         eax,dword ptr [fact]   
+22.00DB2000  push        eax    
+23.00DB2001  push        offset string "%d\n" (0DB5A38h)   
+24.00DB2006  call        dword ptr [__imp__printf (0DB82BCh)]   
+25.00DB200C  add         esp,8   
+26.00DB200F  cmp         esi,esp   
+27.00DB2011  call        @ILT+320(__RTC_CheckEsp) (0DB1145h)   
+28.    return 0;  
+
+ 其factorial函数的汇编如下 
+
+ 01.int factorial(int n)  
+02.{  
+03.00DB1AF0  push        ebp    
+04.00DB1AF1  mov         ebp,esp   
+05.00DB1AF3  sub         esp,0C0h   
+06.00DB1AF9  push        ebx    
+07.00DB1AFA  push        esi    
+08.00DB1AFB  push        edi    
+09.00DB1AFC  lea         edi,[ebp-0C0h]   
+10.00DB1B02  mov         ecx,30h   
+11.00DB1B07  mov         eax,0CCCCCCCCh   
+12.00DB1B0C  rep stos    dword ptr es:[edi]   
+13.    if (1 == n )  
+14.00DB1B0E  cmp         dword ptr [n],1   
+15.00DB1B12  jne         factorial+2Bh (0DB1B1Bh)   
+16.        return 1;  
+17.00DB1B14  mov         eax,1   
+18.00DB1B19  jmp         factorial+3Eh (0DB1B2Eh)   
+19.    return n * factorial(n - 1);  
+20.00DB1B1B  mov         eax,dword ptr [n]   
+21.00DB1B1E  sub         eax,1   
+22.00DB1B21  push        eax    
+23.00DB1B22  call        @ILT+475(_factorial) (0DB11E0h)   
+24.00DB1B27  add         esp,4   
+25.00DB1B2A  imul        eax,dword ptr [n]   
+26.  
+27.}  
+28.00DB1B2E  pop         edi    
+29.00DB1B2F  pop         esi    
+30.00DB1B30  pop         ebx    
+31.00DB1B31  add         esp,0C0h   
+32.00DB1B37  cmp         ebp,esp   
+33.00DB1B39  call        @ILT+320(__RTC_CheckEsp) (0DB1145h)   
+34.00DB1B3E  mov         esp,ebp   
+35.00DB1B40  pop         ebp    
+36.00DB1B41  ret           
+
+
+ 在整个汇编程序中，在 
+
+
+ 01.call        @ILT+475(_factorial) (0DB11E0h)  
+之前的push 为参数的入栈。这儿是关键，其他的push我们可以认为是系统为了栈的平衡而进行的必要操作。 
+
+在factorial的反汇编中，
+
+
+ 01.00DB1B39  call        @ILT+320(__RTC_CheckEsp) (0DB1145h)  
+这句话是函数factorial调用自己本身，也就是递归。
+
+
+push eax；将每次入栈的参数保存到eax寄存器中，然后再入栈，这样在n ！= 1时，每次的参数都会入栈；
+
+
+ 01.00DB1B2A  imul        eax,dword ptr [n]   
+这一步骤是为了进行相乘。在eax寄存器中保存相乘的值。 
+
+其实在整个过程中，牵涉到函数调用中栈帧的一系列操作。
+
+进行一个总结：
+
+           函数递归是利用系统中栈进行操作的，通过对栈帧的一系列操作，从而实现递归。这个过程是由系统来完成的。
+
+在阶乘中，我们通过对factorial函数的参数入栈，然后通过栈帧的一系列操作，从而实现参数的出栈，进而完成阶乘这个动作。整个过程实际上就是一个栈的入栈和出栈问题。
+
+
+现在我们要通过自己定义一个栈来实现函数递归。
+
+
+
+[cpp] view plain copy
+
+ 01.#include "stack.h"  
+02.#define  NumOfStack 10  
+03.int main(void)  
+04.{  
+05.    StackNode * pStackNode = NULL ;  
+06.    int NOfFact;  
+07.    int tmp = 1,Sum = 1;  
+08.    pStackNode = CreateStack(NumOfStack);  
+09.    printf("the number of Factorial\n");  
+10.    scanf("%d",&NOfFact);  
+11.    while(NOfFact)  
+12.    {  
+13.        Push(pStackNode,NOfFact--);  
+14.    }  
+15.    while(pStackNode->top)  
+16.    {  
+17.        Pop(pStackNode,&tmp);  
+18.        Sum *= tmp;  
+19.    }  
+20.    printf("sum is %d\n",Sum);  
+21.    return 0;  
+22.}  
+
+ 仅仅呈现主程序部分。在主程序中，我们首先对参数入栈，也就是对n 、n-1、...1入栈，然后再出栈进行操作。 
+
+
