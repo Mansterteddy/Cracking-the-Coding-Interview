@@ -1,0 +1,67 @@
+Vector：
+#include <vector>
+
+Vectors 包含着一系列连续存储的元素,其行为和数组类似。
+访问Vector中的任意元素或从末尾添加元素都可以在常量级时间复杂度内完成，
+而查找特定值的元素所处的位置或是在Vector中插入元素则是线性时间复杂度。
+类似于堆栈。
+
+构造函数：
+vector<int> v1;
+
+运算符：
+==, !=, <=, >=, <, >
+要访问vector中的某特定位置的元素可以使用[]操作符
+
+vector相等：具有相同的容量，所有相同位置的元素相等。
+
+vector之间的大小比较是按照词典规则。
+
+assign()函数 用于对vector某一范围赋值
+
+at()函数，返回当前vector指定位置loc的元素的引用。
+at比[]更加安全，因为不会访问到越界元素。
+
+back()函数，返回当前vector中最末一个元素的引用
+
+begin()函数，返回一个指向当前vector起始元素的迭代器
+
+capacity()函数，返回当前vector在重新进行内存分配以前所能容纳的元素数量。
+
+clear()函数，删除当前vector中所有的元素
+
+empty()函数，判断当前vector是否为空
+
+end()函数，泛回一个指向当前vector末尾元素的下一个位置的迭代器。
+注意如果要访问末尾元素，需要先将此迭代器自减1。
+
+erase()函数，删除某个指定位置的元素，或者删除某个区间[start, end)的所有元素。
+返回值是指向删除的最后一个元素的下一个位置的迭代器。
+
+front()函数，返回当前vector起始元素的引用。
+
+get_allocator()函数，返回当前vector的内存分配器。
+
+insert()函数，向vector中插入元素。
+
+max_size()函数，返回当前vector所能容纳元素数量的最大值。
+
+pop_back()函数，删除当前vector最末的一个元素。
+
+push_back()函数，添加值为val的元素到当前vector末尾。
+
+rbegin()函数，返回指向当前vector末尾的逆迭代器，实际指向末尾的下一个位置，而其内容为末尾元素的值。
+
+rend()函数，返回指向当前vector起始位置的逆迭代器。
+
+reserve()函数，为当前vector预留至少共容纳size个元素的空间。
+
+resize()函数，改变当前vector的大小。
+
+size()函数，返回当前vector所容纳元素的数目。
+
+swap()函数，交换当前vector和vector参数的元素。
+
+
+
+

@@ -1,0 +1,295 @@
+重载的两个关键问题：
+1、声明/定义重载函数时，是如何解决命名冲突的？（抛开函数重载不谈，using就是一种解决命名冲突的方法）
+2、当我们调用一个重载函数时，又是如何去解析的？（即怎么知道调用的是哪个函数呢？）
+
+什么是函数重载？
+函数重载是指在同一作用域内，可以有一组相同函数名，不同参数列表的函数，这组函数被称为重载函数。
+重载函数通常用来命名一组功能相似的函数，这样做减少了函数名的数量，避免了命名空间的污染，
+对于程序的可读性有很大的好处。
+
+When two or more different declarations are specified for a single name in the same scope,  
+that name is said to overloaded.  By extension, 
+two declarations in the same scope that declare the same name but with different types are 
+called overloaded declarations. Only function declarations can be overloaded; 
+object and type declarations cannot be overloaded.
+
+#include<iostream>
+using namespace std;
+
+void print(int i)
+{
+        cout<<"print a integer :"<<i<<endl;
+}
+
+void print(string str)
+{
+        cout<<"print a string :"<<str<<endl;
+}
+
+int main()
+{
+        print(12);
+        print("hello world!");
+        return 0;
+}
+
+通过上面代码的实现，可以根据具体的print()的参数去调用print(int)还是print(string)。
+上面print(12)会去调用print(int)，print("hello world")会去调用print(string)。
+
+为什么需要函数重载（why）？
+
+•试想如果没有函数重载机制，如在C中，你必须要这样去做：为这个print函数取不同的名字，
+如print_int、print_string。这里还只是两个的情况，如果是很多个的话，
+就需要为实现同一个功能的函数取很多个名字，如加入打印long型、char*、各种类型的数组等等。
+这样做很不友好！ 
+•类的构造函数跟类名相同，也就是说：构造函数都同名。
+如果没有函数重载机制，要想实例化不同的对象，那是相当的麻烦！ 
+•操作符重载，本质上就是函数重载，它大大丰富了已有操作符的含义，方便使用，如+可用于连接字符串等！ 
+
+通过上面的介绍我们对函数重载，应该唤醒了我们对函数重载的大概记忆。
+下面我们就来分析，C++是如何实现函数重载机制的。
+
+编译器如何解决命名冲突？
+
+对程序进行反编译
+我们可以发现编译之后，重载函数的名字变了不再都是print！这样不存在命名冲突的问题了，
+但又有新的问题了——变名机制是怎样的，即如何将一个重载函数的签名映射到一个新的标识？
+我的第一反应是：函数名+参数列表，因为函数重载取决于参数的类型、个数，而跟返回类型无关。
+但看下面的映射关系：
+
+void print(int i)                    -->         _Z5printi 
+void print(string str)         -->         _Z5printSs
+
+进一步猜想，前面的Z5表示返回值类型，print函数名，i表示整型int，Ss表示字符串string，
+即映射为返回类型+函数名+参数列表。最后在main函数中就是通过_Z5printi、_Z5printSs来调用对应的函数的：
+
+80489bc:       e8 73 ff ff ff          call   8048934 <_Z5printi> 
+…………… 
+80489f0:       e8 7a ff ff ff          call   804896f <_Z5printSs> 
+
+我们再写几个重载函数来验证一下猜想，如:
+
+void print(long l)           -->           _Z5printl 
+void print(char str)      -->           _Z5printc 
+可以发现大概是int->i，long->l，char->c，string->Ss….基本上都是用首字母代表，
+现在我们来现在一个函数的返回值类型是否真的对函数变名有影响，如
+
+#include<iostream>
+using namespace std;
+
+int max(int a,int b)
+{
+        return a>=b?a:b;
+}
+
+double max(double a,double b)
+{
+        return a>=b?a:b;
+}
+int main()
+{
+        cout<<"max int is: "<<max(1,3)<<endl;
+        cout<<"max double is: "<<max(1.2,1.3)<<endl;
+        return 0;
+}
+
+int max(int a,int b) 映射为_Z3maxii、double max(double a,double b) 映射为_Z3maxdd，
+这证实了我的猜想，Z后面的数字代码各种返回类型。更加详细的对应关系，如那个数字对应那个返回类型，
+哪个字符代表哪重参数类型，就不去具体研究了，因为这个东西跟编译器有关，上面的研究都是基于g++编译器，
+如果用的是vs编译器的话，对应关系跟这个肯定不一样。但是规则是一样的：“返回类型+函数名+参数列表”。
+
+既然返回类型也考虑到映射机制中，这样不同的返回类型映射之后的函数名肯定不一样了，但为什么不将函数返回类型考虑到函数重载中呢？
+——这是为了保持解析操作符或函数调用时，独立于上下文（不依赖于上下文），看下面的例子
+
+float sqrt(float);
+double sqrt(double);
+
+void f(double da, float fla)
+{
+      float fl=sqrt(da);//调用sqrt(double)
+      double d=sqrt(da);//调用sqrt(double)
+
+      fl=sqrt(fla);//调用sqrt(float)
+      d=sqrt(fla);//调用sqrt(float)
+}
+
+如果返回类型考虑到函数重载中，这样将不可能再独立于上下文决定调用哪个函数。
+
+至此似乎已经完全分析清楚了，但我们还漏了函数重载的重要限定——作用域。上面我们介绍的函数重载都是全局函数，
+下面我们来看一下一个类中的函数重载，用类的对象调用print函数，并根据实参调用不同的函数：
+
+#include<iostream>
+using namespace std;
+
+class test{
+public:
+        void print(int i)
+        {
+                cout<<"int"<<endl;
+        }
+        void print(char c)
+        {
+                cout<<"char"<<endl;
+        }
+};
+int main()
+{
+        test t;
+        t.print(1);
+        t.print('a');
+        return 0;
+}
+
+我们现在再来看一下这时print函数映射之后的函数名：
+
+void print(int i)                    -->            _ZN4test5printEi
+
+void print(char c)               -->            _ZN4test5printEc
+
+注意前面的N4test，我们可以很容易猜到应该表示作用域，N4可能为命名空间、test类名等等。这说明最准确的映射机制为：作用域+返回类型+函数名+参数列表
+
+重载函数的调用匹配
+
+现在已经解决了重载函数命名冲突的问题，在定义完重载函数之后，用函数名调用的时候是如何去解析的？为了估计哪个重载函数最适合，需要依次按照下列规则来判断：
+•精确匹配：参数匹配而不做转换，或者只是做微不足道的转换，如数组名到指针、函数名到指向函数的指针、T到const T； 
+•提升匹配：即整数提升（如bool 到 int、char到int、short 到int），float到double 
+•使用标准转换匹配：如int 到double、double到int、double到long double、Derived*到Base*、T*到void*、int到unsigned int； 
+•使用用户自定义匹配； 
+•使用省略号匹配：类似printf中省略号参数 
+
+如果在最高层有多个匹配函数找到，调用将被拒绝（因为有歧义、模凌两可）。看下面的例子：
+
+void print(int);
+void print(const char*);
+void print(double);
+void print(long);
+void print(char);
+
+void h(char c,int i,short s, float f)
+{
+     print(c);//精确匹配，调用print(char)
+     print(i);//精确匹配，调用print(int)
+     print(s);//整数提升，调用print(int)
+     print(f);//float到double的提升，调用print(double)
+
+     print('a');//精确匹配，调用print(char)
+     print(49);//精确匹配，调用print(int)
+     print(0);//精确匹配，调用print(int)
+     print("a");//精确匹配，调用print(const char*)
+}
+
+定义太少或太多的重载函数，都有可能导致模凌两可，看下面的一个例子：
+
+void f1(char);
+void f1(long);
+
+void f2(char*);
+void f2(int*);
+
+void k(int i)
+{
+       f1(i);//调用f1(char)？ f1(long)？
+       f2(0);//调用f2(char*)？f2(int*)？
+}
+
+这时侯编译器就会报错，将错误抛给用户自己来处理：通过显示类型转换来调用等等（如f2(static_cast<int *>(0)，
+当然这样做很丑，而且你想调用别的方法时有用做转换）。
+上面的例子只是一个参数的情况，下面我们再来看一个两个参数的情况：
+
+int pow(int ,int);
+double pow(double,double);
+
+void g()
+{
+       double d=pow(2.0,2)//调用pow(int(2.0),2)? pow(2.0,double(2))?
+}
+
+编译器是如何解析重载函数调用的？
+编译器实现调用重载函数解析机制的时候，肯定是首先找出同名的一些候选函数，然后从候选函数中找出最符合的，如果找不到就报错。
+由匹配文法中的函数调用，获取函数名； 
+•获得函数各参数表达式类型； 
+•语法分析器查找重载函数，符号表内部经过重载解析返回最佳的函数 
+•语法分析器创建抽象语法树，将符号表中存储的最佳函数绑定到抽象语法树上 
+
+下面我们重点解释一下重载解析，重载解析要满足前面《3、重载函数的调用匹配》中介绍的匹配顺序和规则。
+重载函数解析大致可以分为三步：
+•根据函数名确定候选函数集 
+•从候选函数集中选择可用函数集合 
+•从可用函数集中确定最佳函数，或由于模凌两可返回错误 
+
+C++中的重载，这是个比较有意思的话题，因为我们在开发中一般都用到这方面的知识，那么我怎么怎么样更加通俗易懂了解c++中的重载呢，
+
+      函数的重载主要有函数重载和运算符重载，现在我为大家介绍一下函数重载，函数重载其实就是多个函数有一个相同的函数名字，
+      但是这些函数的参数类型和参数个数却是不同的，比如说：
+
+int Add(int a,int b)
+
+ {
+
+return a+b;
+
+}
+
+double Add(double a,double b)
+
+{
+
+Return a+b;
+
+}
+
+虽然上面这2个Add函数的名字相同，但是他们的参数是不同的，当然了，你也可以定义多个参数，比如说
+
+int Add(int a,int b,int c)
+
+{
+
+Return a+b+c;
+
+}
+
+这些都叫函数的重载，它不受函数返回值的影响，只受参数类型和参数的个数。
+这些只是在一个单个类中定义的重载，那么在子类和父类中怎样定义函数的重载呢，看下面的代码
+
+ Class CTest
+
+{ 
+
+public:
+
+CTest();
+
+     int Add(int a,int b)
+
+ {
+
+return a+b;
+
+}
+
+}
+
+Class CDouble public CTest
+
+{
+
+public:
+
+CTest();
+
+double Add(double a,double b)
+
+{
+
+Return a+b;
+
+}
+
+}
+
+CTest 类中的Add函数实现的是2个整数的相加，但是我想实现2个double类型的相加呢，
+于是我就可以继承一个CTest类并且重载这个Add函数，那么这2个函数具体怎么用呢，
+首先是声明这2个类的对象，比如说 CTest  intAdd,那么 intAdd.Add(5,8)调用的就是2个整数的相加，
+如果是2个double相加必须声明 CDouble doubleAdd ,那么函数调用就是doubleAdd.Add(5.5,6.6);
+其实C++编译器就是依靠前缀来正确的调用的，
+
