@@ -1,0 +1,5 @@
+You have an array with all the numbers from 1 to N, where N is at most 32,000. The array may have duplicate entries and you 
+do not know what N is. With only 4KB of memory available, how would you print all duplicate elements in the array?
+
+4kB = 4 * 1024 B = 4 * 8 * 1024 bit = 32000bit
+先把32000bit置为0，然后一个一个读入数字，如果对应位置是0，则set为1，如果对应位置是1，则输出这个数，因为此时这个数重复了。
