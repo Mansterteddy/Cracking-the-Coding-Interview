@@ -1,0 +1,628 @@
+SYNTAX 
+The define Preprocessor Directive
+FORM: 
+#define macro-name macro-definition 
+#define macro-name(parameter-list) macro-definition 
+EXAMPLES: 
+#define NULL 0 
+#define MAX(x, y) ((x) > (y) ? (x) : (y)) 
+MEANING: Subsequent to the definition, whenever the symbol macro-name 
+is encountered, the preprocessor will replace it with the macro-definition. 
+The macro-definition begins with the first nonspace character after the 
+macro-name and ends with the last nonspace character on the same line as the 
+#define directive. If there are parameters following the macro-name 
+(for example, x and y in MAX(x, y)), they are replaced in the 
+macro-definition with the corresponding actual arguments.
+
+SYNTAX 
+The #ifdef, #ifndef, #else, and #endif Preprocessor Directives 
+FORM: 
+#ifdef macro-name 
+code to be included if macro-name is defined 
+#else code to be included if macro-name is not defined 
+#endif 
+or 
+#ifndef macro-name 
+code to be included if macro-name is not defined 
+#else 
+code to be included if macro-name is defined 
+#endif 
+The #else is optional, but there must be an #endif to correspond to the #ifdef or #ifndef. 
+EXAMPLE: 
+#ifdef __cplusplus 
+extern "C" { ... } 
+#endif 
+MEANING: 
+Indicates what to include if the macro-name is defined or not defined. 
+If the macro-name is defined, include all the lines of code between the 
+#ifdef and the #else (if present), or between the #ifdef and the #endif 
+if there is no #else. If the macro-name is not defined, include all 
+the lines between the #else and the #endif (if any). 
+The opposite happens if the first line begins with #ifndef.
+
+PROGRAM STYLE 
+Using Preprocessor Directives to Prevent Multiple Inclusion of an Include File 
+We use include files to package function and class declarations. 
+It is possible that a function or class uses other functions or classes 
+that are defined in other include files. However, it is an error if 
+the same function declaration or class declaration is presented to the 
+compiler more than once. When you write an include file, you do not know 
+when it is going to be used or by what programs, so each include file 
+should be guarded using preprocessor directives to ensure that it is 
+included only one time. The way this is done is to begin the include file 
+with two directives of the form: #ifndef unique-name #define unique-name 
+where unique-name, as the place holder implies, is a unique name. 
+Generally the file name is converted to uppercase, the period that separates
+the name from the extension is replaced by an underscore, and a trailing 
+underscore is added. Thus the include file myfile.h would use MYFILE_H_ as 
+the unique name. You may see other conventions. The last line of the 
+include file is an #endif directive. The first time the preprocessor sees 
+the #ifndef directive, the unique-name will not be defined. 
+Thus the lines that follow will be processed by the preprocessor and passed 
+on to the compiler. The #define directive will define unique-name 
+so that the next time the preprocessor sees the include file, 
+the #ifndef will be false and the file will be skipped. Note again that
+the last line of the file should be #endif.
+
+PROGRAM STYLE 
+Braces and Indentation in Control Statements C++ programmers often place 
+the opening brace { on the same line as the control statement header. 
+The closing brace } aligns with the first word in the control statement header.
+We will always indent the statements inside a control structure to clarify 
+the meaning of the control statement. Although we write the symbols } 
+else { on one line, another popular style convention is to place the word else 
+under the symbol } and aligned with if: 
+if (next_int % 2 == 0) { 
+    sum += next_int; 
+} 
+else { 
+prod *= next_int; 
+} 
+Some programmers omit the braces when a true task or false task or a loop 
+body consists of a single statement. Others prefer to include them always, 
+both for clarity and because having the braces will permit them to insert 
+additional statements later if needed.
+
+PITFALL 
+Omitting Braces Around a Compound Statement 
+The braces in the preceding example delimit compound statements. 
+Each compound statement consists of two statements. 
+If you omit a brace, you will get the syntax error 'else' without 'if'. 
+
+PROGRAM STYLE 
+Writing if Statements with Multiple Alternatives 
+C++ programmers often write nested if statements like those in the 
+preceding example without indenting each nested if. The following 
+multiple-alternative decision has the same meaning but is easier to write 
+and read. 
+if (operator == '+') { 
+    result = x + y; 
+    add_op++; 
+} else if (operator == '-') { 
+    result = x - y; 
+    subtract_op++; 
+} else if (operator == '*') { 
+    result = x * y; 
+    multiply_op++; 
+} else if (operator == '/') { 
+    result = x / y; 
+    divide_op++; 
+}
+
+
+PROGRAM STYLE 
+C++ Convention for Identifiers 
+Many C++ programmers use lowercase words or phrases for variable names. 
+Words are separated using the underscore character. 
+For classes it is common to use a word or words that begin with an initial 
+uppercase letter. However, the C++ standard uses lowercase for both 
+variable and class names. Identifiers that are in all uppercase are 
+used for macros. Another convention that is becoming popular is 
+“camel notation” for variable names. All letters are in lowercase except for 
+identifiers that are made up of more than one word. 
+The first letter of each word, starting with the second word, 
+is in uppercase (for example, thisLongIdentifier). 
+Camel notation gets its name from the appearance of the identifier, 
+with the uppercase letters in the interior forming “humps.”
+
+PITFALL 
+Using Increment and Decrement in Expressions with Other Operators 
+In the preceding example, the increment operator is used with the 
+assignment operator in the same statement. Similarly, the expression 
+x * i++ uses the multiplication and postfix increment operators. 
+In this expression, the variable i is evaluated and then incremented. 
+When the prefix form is used in an expression (for example, x * ++i), 
+the variable i is incremented before it is evaluated. 
+However, you should avoid writing expressions like these, 
+which could easily be interpreted incorrectly by the human reader.
+
+SYNTAX 
+Object Declaration
+FORM: 
+type-name name; 
+type-name name = initial-value; 
+type-name name(parameter-list); 
+EXAMPLE: 
+int i; 
+string s = "hello"; 
+double x = 5.5; 
+double y(6.7); 
+point p(x, y);
+MEANING: 
+The specified name is declared to reference an object of the 
+specified type-name. Memory for this object is allocated and initialized to 
+the specified value. In the first example, the name i refers to an int object,
+with an unspecified initial value. In the third and fourth examples the 
+names x and y refer to double objects with the initial values 5.5 and 6.7, 
+respectively. Note that the two forms used to initialize x and y are 
+equivalent. In the final example p refers to an object of type point 
+(a class type) with the initial value (x, y). 
+
+SYNTAX 
+Pointer Declaration
+FORM: 
+type-name* pointer-variable; 
+type-name* pointer-variable = &object; 
+EXAMPLE: 
+int* k; 
+int* k = &count; 
+MEANING: 
+The value of the pointer-variable will be a memory address. 
+If the initial value begins with the prefix &, as in &object, 
+the pointer-variable is initialized to the memory address of object.
+
+SYNTAX 
+Address-Of Operator &
+FORM: &object 
+EXAMPLE: &k; 
+MEANING: Gives the address (memory location) of object.
+
+SYNTAX 
+Dereferencing Operator * 
+FORM: 
+*pointer-variable 
+EXAMPLE: 
+*px; 
+MEANING: 
+Gives the object referenced by pointer px. The data associated with this 
+object value can be accessed or changed. For example, if px is type double*,
+the statement *px = 25.0; stores 25.0 in the object referenced by px. 
+The statement *px = *px + 2.5; changes the value of this object to 27.5.
+
+PROGRAM STYLE 
+Use of T* v versus T *v to Declare a Pointer Variable 
+Programmers generally use one of the following statements to declare a pointer
+variable. double* px; double *px; The argument in favor of the first form 
+is that it clearly states that px is of type double* (that is, 
+a pointer to double). The second form states that the expression *px is 
+of type double (and therefore px is of type pointer to double). 
+The second form is technically more correct, since this is how the compiler 
+interprets it. Which one you use is a matter of personal taste as long as you 
+declare each variable individually. 
+
+PITFALL 
+Declaring Multiple Pointer Variables in One Declaration 
+You may also declare multiple variables of the same type in one 
+declaration statement. In that case you must remember that the compiler 
+binds the * to the variable and not the type. Thus the declaration 
+double* px, py; declares that px is a pointer to double, but that py is a 
+double! To declare both px and py to be pointers we need to use the 
+declaration double *px, *py;
+
+PROGRAM STYLE 
+Use of NULL versus 0 The choice of using NULL or 0 to represent the null 
+pointer is the subject of much discussion among C++ programmers. 
+The C++ standards committee is currently working on a revision to 
+the C++ standard. One of the proposed changes is to define a true null 
+pointer constant as a new reserved word in the language. 
+
+SYNTAX 
+The new Operator 
+FORM: 
+new type-name 
+new type-name(initial-value) 
+new class-name(parameters) 
+EXAMPLE: 
+new double; 
+new double(1.23456); 
+new std::string(line, 5, 10) 
+MEANING: 
+Memory is allocated for an object of type type-name. If an 
+initial-value or list of parameters is provided, those values are 
+placed in the new object. (In the case of an object of class type, 
+these actions are carried out by a call to the constructor for the class 
+that takes these parameters. Constructors will be discussed in Chapter 1.) 
+A pointer to the created object is returned. The first of the foregoing 
+examples creates a double object and returns a pointer to it. 
+The second example creates a double object, initializes its value to 1.23456, 
+and returns a pointer to it. The third example creates a new string object
+and initializes it to the substring of the string line that begins at the 
+fifth character and has a length of 10 characters.
+
+SYNTAX 
+The delete Operator 
+FORM: 
+delete pointer-variable; 
+EXAMPLE: 
+delete px; 
+MEANING: 
+The memory occupied by the object pointed to by px is returned to the free 
+memory pool. (If the object is of class type, 
+the destructor function for the class is called first; 
+destructors will be discussed in Chapter 1.) 
+Note that the pointer variable must point to an object that was created 
+via the new operator.
+
+PITFALL 
+Out-of-Bounds Subscripts 
+C++ allows you to use an array subscript that is outside of the array bounds. 
+For example, if you attempt to reference scores[5], 
+a C or C++ compiler would access the first memory cell following the array scores. 
+This is considered an error, but it is not detected by the run-time system 
+and will probably lead to another error that will be detected further 
+down the road (before it does too much damage, you hope).
+
+SYNTAX 
+The new[] Operator
+FORM: 
+new type-name[expression] 
+EXAMPLE: 
+new string[n] 
+MEANING: 
+Space is allocated for an array of type-name objects of length expression.
+A pointer to the first element of this array is returned.
+
+SYNTAX 
+The delete[] Operator
+FORM: 
+delete[] pointer; 
+EXAMPLE: 
+delete[] students; 
+MEANING: 
+The dynamically allocated array whose first element is pointed to by pointer 
+is deleted and returned to the free storage pool. Note that the array 
+must have been allocated using the new[] operator. 
+
+PROGRAM STYLE 
+Use of at Versus the Subscript Operators 
+If names is a string, you can reference the character at position index 
+using either names.at(index) or names[index]. The use of at has the advantage 
+that if the index is not valid, the program is aborted as a result of an exception 
+being thrown. (Exceptions are discussed in Chapter 2.) However, despite this advantage,
+C++ programmers generally prefer to use the latter form because it is simpler.
+
+PITFALL
+If you extract the last value on a data line using the extraction operator 
+>> and then use getline, you will get a surprising result. 
+There will still be an unprocessed \n character at the end of the data line, 
+so the function call 
+getline(cin, name, '\n'); 
+would extract just the '\n' character, 
+and an empty string would be stored in name. Consequently, you must first skip 
+over the '\n' character (using function ignore) before calling getline to 
+read the characters typed in on the next line. 
+// Skip all characters through the first '\n' 
+cin.ignore(numeric_limits<int>::max(), '\n');   
+getline(cin, name, '\n'); 
+
+SYNTAX 
+Class Definition
+FORM: 
+class name { 
+public: 
+    member declarations 
+private: 
+    member declarations }; 
+EXAMPLE: 
+See Listing 1.1.
+MEANING: 
+The class name is defined to have the members listed. 
+Members may be either data members (also called data fields), 
+member functions (also called functions), or nested classes. 
+Members that are declared following the access specifier 
+public: are accessible by functions outside of the class, 
+while those following the access specifier 
+private: are accessible only by functions that are members of the class 
+or are declared to be friends of the class. 
+There may be multiple public and private regions, 
+but generally all public members are declared together, 
+followed by all private members. 
+Also, declarations that precede the first access specifier are 
+considered to be private.
+
+SYNTAX 
+Member Function Definition 
+FORM: 
+return-type class-name::function-name(parameter list) const(opt) { body } 
+EXAMPLE: 
+int Clock::get_hours() const { return hours; } 
+MEANING: 
+The function function-name that is a member of the class class-name is 
+defined by the sequence of statements provided in the body. 
+The declaration portion of the definition must be the same as that given 
+in the class definition with respect to the return type, 
+function name, types of parameters, and const specifier. 
+The subscript opt following the const specifier indicates that it is optional. 
+However, if it is present in the function declaration, it must also be 
+present in the corresponding function definition. 
+If these do not match, the compiler will report an error such as 
+“function-name is not a member of class-name.” 
+
+PROGRAM STYLE 
+Explicit Namespace Qualification in Include Files 
+You will notice that the include file included the standard headers 
+<string> and <iostream>, but it did not contain a using directive 
+such as using namespace std; Instead we specifically qualified the classes 
+string and ostream with the prefix std::. This is because we do not know 
+whether the client program will include the using directive. 
+In Chapter 3 we will see reasons why this may not be desirable. 
+It is considered good program style to always use explicit namespace 
+qualification in header files.
+
+SYNTAX 
+Constructor Definition 
+FORM: 
+class-name(parameters) : initialization-expressions { body } 
+EXAMPLES: 
+Person(std::string first, std::string family, std::string ID, int birth) : given_name(first), family_name(family), ID_number(ID), birth_year(birth) { } 
+Person() : given_name(""), family_name(""), ID_number(""), birth_year(1900) { } 
+MEANING: 
+A constructor has the same name as its class and has no return type. 
+A constructor is called automatically when an object is created. 
+Its purpose is to initialize the memory allocated to the object to initial 
+values. Constructors may have parameters, and constructors having different 
+parameter lists may be defined. The initialization-expressions are of the form 
+data-field-name(initial-value). As the object is constructed, the named data 
+fields are set to the given initial values. After the object is constructed, 
+the body of the constructor is then executed. 
+
+PROGRAM STYLE 
+Use of Initialization Expressions in Constructors 
+It is preferable to use initialization expressions to initialize data fields 
+rather than using assignment statements in the body. 
+Initialization expressions have the form data-member(initial-value-expression) 
+An initialization expression such as given_name(first) is evaluated as 
+the object is being constructed. If there is no initialization 
+expression for a class data field, it may be initialized to a default value. 
+The body is executed after the object is constructed. 
+Thus, if you initialize a class data field in the body using an assignment 
+statement 
+given_name = first; 
+you are effectively initializing it twice. 
+While this does not matter for the built-in types 
+because they have no default initialization, 
+it is significant for class types, which may have 
+several data fields of their own to initialize.
+
+PROGRAM STYLE 
+Inline Definition of Constructors, Accessors, and Modifiers 
+It is a good programming practice to separate the declarations of the 
+member functions from their definitions. The public portion of a class 
+definition is its interface. This is how clients view the class. 
+If the function definition is included in the class definition, 
+the client programs include the function definition into their own code. 
+Then, if we want to change a function’s implementation, we force the 
+client programs to change. There are two reasons for making an 
+exception for constructors, accessors, and modifiers. 
+First of all, if a function definition is included in a class definition, 
+the compiler treats this function as an inline function. 
+That is, the compiler replaces a call to that function with the 
+code contained in the function body. 
+Such code executes faster. 
+Second, constructors, accessors, and modifiers generally are very simple 
+and are unlikely to change. Constructors generally consist only of 
+initialization expressions; accessors generally consist of a return 
+statement, and modifiers generally consist of a single assignment statement. 
+Although we did not insert the accessor function definitions for class 
+Clock in the public part of file Clock.h; it would have been permissible, 
+and even desirable, to do this.
+
+SYNTAX 
+Operator Declaration 
+FORM: 
+return-type operator operator-symbol(parameter) const; 
+EXAMPLES: 
+bool operator==(const Person& per) const; 
+bool operator!=(const Person& per) const; 
+MEANING: 
+The operator specified by operator-symbol is defined for this class. 
+The left-hand operand is the current object; 
+the right-hand operand is specified by parameter in the same way as a function 
+parameter. If the word const appears at the end of the declaration, 
+the left-hand operand is not changed by the operator.
+
+PROGRAM STYLE
+Returning a Boolean Value 
+Some programmers unnecessarily write if statements to return a Boolean value. 
+For example, instead of writing 
+return ID_number == per.ID_number; 
+they write 
+if (ID_number == per.ID_number) 
+    return true; 
+else 
+    return false; 
+Resist this temptation. The return statement by itself returns 
+the value of the if statement condition, which must be true or false. 
+It does this in a clear and succinct manner using one line instead of four.
+
+PITFALL
+Referencing a Data Field or Parameter Hidden by a Local Declaration 
+If you happen to declare a local variable (or parameter) with the same 
+name as a data field, the local declaration hides the data field declaration, 
+so the C++ compiler will translate the use of that name as 
+meaning the local variable (or parameter), not the data field. 
+So, if birth_year was also declared locally in class Person, 
+the statement 
+birth_year++; 
+would increment the local variable, but the data field value would not change.
+
+SYNTAX 
+UML Syntax
+In UML class diagrams, the + sign next to the function names indicate 
+that these functions are public. The – sign next to the attributes name and 
+number indicate that they are private. For the class Directory_Entry we 
+show the types of the attributes, and the parameter types and 
+return types of the member functions. 
+Showing this information on the diagram is optional. 
+We will generally show this information in separate tables such as 
+Table 1.9. Appendix B provides a summary of UML.
+ 
+PITFALL
+Returning –1 (Failure) Before Examining All Array Elements 
+A common logic error is to code the search loop for function find as follows: 
+for (int i = 0; i < size; i++) { 
+    if (the_directory[i].get_name() == name) { 
+        return i; 
+        } else { 
+            return –1;  // Incorrect! – tests only one element. 
+        } 
+    } 
+This loop incorrectly returns a result after testing just the first element.  
+
+PITFALL 
+Failure to Delete Dynamically Allocated Arrays 
+If we do not return the storage allocated to the old array to the 
+free-memory pool, this memory is lost. This is known as a memory-leak. 
+Although modern computers seem to have infinite memory, 
+there is in fact only a finite supply. Furthermore, 
+programs that leak memory can impact other programs running on the same 
+computer. A program that routinely leaks memory can eventually 
+require you to reboot your computer.
+
+PROGRAM STYLE 
+Type Casting in C++ Versus C or Java 
+In the type cast double(sum) the target data type is used as an operator, 
+and the expression being cast is enclosed in parentheses. 
+You could also use the C or Java form for type casting: 
+(double) sum 
+but it is not the preferred form.
+
+PROGRAM STYLE 
+Using a bool Result to Indicate Success or Failure 
+What is gained by returning a bool value when we execute function 
+set_element_of_x? The caller of the function can use this result to 
+display an error message to the program user if desired. 
+The following if statement applies function set_element_of_x to array x and 
+writes an error message to stream cerr: 
+if (!set_element_of_x(index, val)) 
+    cerr << "*** ERROR – index value " << index << " is out of bounds. ***\n";
+
+PITFALL 
+Buffer Overruns Cause Security Holes 
+Many of the security holes in programs are due to buffer overruns, 
+which are a type of array-index-out-of-bounds error. 
+A malicious program sends a large input stream to a program that does 
+not check to see that the data fits into the array allocated to receive it. 
+By modifying data outside of the allocated array, the malicious program 
+is able to take over control of the target computer.
+
+PROGRAM STYLE 
+Initialize Pointers to NULL 
+Although your program crashes if it attempts to dereference a null pointer, 
+this is much better than having an error go unreported. C++ does not assign 
+default values automatically to pointers when they are allocated. 
+Until a pointer is assigned a value, it may point to anything at all. 
+For this reason, it is a good practice to initialize a pointer to NULL 
+when you first declare it. This way, if you attempt to dereference 
+such a pointer before it is given an initial value, you will know about it.
+
+SYNTAX 
+The throw Statement
+FORM: 
+throw expression; 
+EXAMPLES:  
+throw "The value of index is out of range"; 
+throw std::out_of_range("The value of index is out of range"); 
+MEANING: 
+The normal sequence of execution is interrupted, and control is 
+transferred to the nearest exception handler whose parameter type matches 
+the type of the expression. An exception handler is like a function, 
+and the rules for matching an exception handler are the same as the 
+rules for matching an overloaded function. If the current function 
+body contains no such handler, then control is returned to the 
+calling function, and a search is made from the point of the call. 
+This process is repeated until the corresponding exception handler is 
+found or until the main function is reached. 
+If no exception handler is found, then the program terminates. 
+
+SYNTAX The try Block
+FORM: 
+try { 
+code that may throw an exception 
+} catch (type-1 parameter-1) { 
+statements to process type-1 
+} catch (type-2 parameter-2) { 
+statements to process type-2 
+} ... catch (type-n parameter-n) 
+statements to process type-n } 
+EXAMPLE: 
+try { 
+val = get_element_of_x(10); 
+} catch (std::out_of_range& ex) { 
+cerr << "Out of range exception occurred\n"; 
+cerr << ex.what() << endl; 
+abort();    
+// Exit with an error indication. } 
+MEANING: 
+The statements in the try block execute through to completion 
+unless an exception is thrown. 
+If there is an exception handler for the exception, 
+its body executes to completion. 
+If there is no exception handler that matches the exception, 
+then the exception is passed up the call chain until 
+either it is caught by some other function in the call chain 
+or it is processed by the run-time library as an uncaught exception. 
+If there are multiple catch blocks, 
+they are checked in the order in which they appear. 
+ 
+PITFALL 
+Unreachable Exception Handler 
+Note that only the first exception handler (catch block) that has an 
+appropriate exception type executes. All other exception handlers are 
+skipped. If an exception handler’s parameter type is derived from the class 
+in an earlier exception handler, the earlier handler will match that type 
+as well, and the later exception handler cannot execute. In this case 
+the C++ compiler will issue a warning message. 
+To correct this error, switch the order of the exception handlers 
+so that the exception handler for the derived class type comes first. 
+
+PROGRAM STYLE 
+Using Exceptions to Enable Straightforward Code 
+In computer languages that did not provide exceptions, 
+programmers had to incorporate error-checking logic throughout 
+their code to check for many possibilities, some of which were of 
+low probability. The result was sometimes messy, as follows: 
+Step A 
+if (Step A successful) { 
+Step B 
+if (Step B successful) { 
+Step C 
+} else { 
+Report error in Step B 
+Clean up after Step A 
+} 
+} else { 
+Report error in Step A 
+} 
+With exceptions this becomes much cleaner, as follows: 
+try { 
+Step A 
+Step B 
+Step C 
+} catch (exception indicating Step B failed) { 
+Report error in Step B 
+Clean up after Step A 
+} catch (exception indicating Step A failed) { 
+Report error in Step A 
+}
+
+SYNTAX 
+Assertion Statement
+FORM: 
+assert(expression); 
+EXAMPLE: 
+assert(x == 5); 
+INTERPRETATION: 
+If the expression evaluates to false, then the program writes an error 
+message and aborts. The error message includes the expression that 
+failed, the source file name, and the line number of the assertion statement.
