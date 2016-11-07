@@ -1,0 +1,73 @@
+在 C++ 中有一个很重要的概念就是头文件。
+
+之所以在 C++ 中要使用头文件，最主要的原因是 C++ 的同一个项目可能有多个源代码文件，要命的是这些源代码是分别单独编译的。
+
+也就是说，在编译其中一个文件时，编译器并不知道其它文件中定义的内容，如类、全局变量等。
+
+这就要求我们必须在要使用某个类、函数或变量的每个文件中声明它，否则 C++ 是无法找到它的。
+
+例如：假设你写了一个通用的函数 add，它的定义如下：
+
+ int add(int a, int b)
+{
+   return a+b;
+}
+ 
+
+很多文件可能都需要使用加法。假设有一个文件 b.cpp 需要使用这个函数，那么，它必须先声明它，虽然不需要再重写。
+
+ int add(int a, int b);
+ add(5,5);
+ 
+
+如果有很多文件都要使用这个函数，那么这会变得麻烦，特别的，如果你写了一个类，那么你需要维护大量的声明（对于每一个 public 对象），
+并且如果你的类的定义发生了改变，你可能不得不改变无数个声明。
+
+所以，C++ 语言提出了头文件的概念。你只需要在头文件中声明一次，在实现文件中定义一次，在所有需要用的文件中，就只需要引用这个头文件，
+相当于每个文件都包含了一个声明。
+
+为了防止头文件的重复包含，通常应该使用预处理指令 #define （定义符号）、#ifndef（如果没有定义）、#endif（结束判断）来书写头文件的内容。
+
+请理解如下的例子，它是对上个笔记中的 Xiao 类的改进。
+
+Xiao 类的实现（xiao.cpp）
+ 
+ #include "xiao.h"
+ 
+bool Xiao::MobaiXiao()
+{
+		return this->mobai("xiao", 10000); // 正确
+}
+bool Xiao::mobai(char* cowname, int mobai_times)
+{
+		// 膜拜神牛。
+		return true;
+}
+ 
+
+Xiao.h 头文件
+
+#ifndef XIAO_H
+#define XIAO_H
+class Xiao
+{
+public:
+	bool MobaiXiao();
+private:
+	bool mobai(char* cowname, int mobai_times);
+};
+#endif
+ 
+
+主程序：
+
+
+ #include "xiao.h"
+ 
+int main()
+{
+	(Xiao()).MobaiXiao (); // 正确
+	//(Xiao()).mobai ("xiao", 10000); // 错误
+    return 0;
+}
+ 
