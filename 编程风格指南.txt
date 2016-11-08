@@ -626,3 +626,375 @@ INTERPRETATION:
 If the expression evaluates to false, then the program writes an error 
 message and aborts. The error message includes the expression that 
 failed, the source file name, and the line number of the assertion statement.
+
+SYNTAX 
+Defining a Derived Class 
+FORM: 
+class derived-class : public base-class { ... } 
+EXAMPLE: 
+class Lap_Top : public Computer { ... } 
+MEANING: 
+The class derived-class inherits the member functions and data fields from the class 
+base-class.
+
+PITFALL 
+Neglecting the Keyword public When Declaring a Derived Class 
+If we omit the keyword public when we declare a derived class, we will declare a 
+derived class with private inheritance. This means that the derived class will 
+inherit the data fields and functions of the base class, but they will not be visible 
+to client classes. Effectively, the derived class contains a private data field 
+that contains a base-class object. This is another way to represent the has-a 
+relationship.
+
+PITFALL 
+Not Defining the No-Parameter Constructor 
+If no constructors are defined for a class, the no-parameter constructor for that class 
+will be provided by default. However, if any constructors are defined, 
+the no-parameter constructor must also be defined explicitly if it needs to be invoked. 
+C++ does not provide it automatically in this case, because it may make no sense to 
+create a new object of that type without providing initial data field values. 
+(It was not defined in class Lap_Top or Computer because we want the client to specify 
+some information about a Computer object when that object is created.) 
+If the no-parameter constructor is defined in a derived class but is not defined 
+in the base class, you will get a syntax error. For example, the g++ compiler 
+displays an error such as no matching function call to class_name::class_name() 
+You can also get this error if a derived-class constructor does not explicitly 
+call a baseclass constructor. There will be an implicit call to the 
+no-parameter base-class constructor, so it must be defined.
+
+SYNTAX 
+Calling Base-Class Functions
+FORM: 
+base-class::function-name() 
+base-class::function-name(argument-list) 
+EXAMPLE: 
+Computer::to_string() 
+MEANING: 
+Using the prefix base-class:: in a call to function function-name 
+calls the function with that name defined in the base class of 
+the current class.
+
+SYNTAX 
+Declaring a Pointer Type
+FORM: 
+type-name* variable-name; 
+EXAMPLE: 
+Computer* the_computer; 
+MEANING: 
+The variable variable-name is declared to be of type 
+pointer-to-type-name. As discussed in the C++ Primer, a pointer 
+is an object that contains the address of another object. 
+To reference the object pointed to by a pointer variable, 
+use either the dereferencing operator * (for example, *the_computer) 
+or the pointer class member access operator -> (for example, 
+the_computer->). Pointers are initialized using either 
+the address-of operator (&) or the new operator.
+
+SYNTAX 
+Creating New Objects Using the new Operator
+FORM: 
+new type-name; 
+new type-name(argument-list); 
+EXAMPLE: 
+new Computer("Acme", "Intel P4 2.4", 512, 60); 
+MEANING: 
+Memory is dynamically allocated for a new object of type type-name 
+and the constructor is then called to initialize the object. 
+A pointer to the newly created object is the value of this 
+expression. 
+
+SYNTAX 
+Accessing an Object Through a Pointer (the Dereferencing Operator *)
+FORM: 
+*pointer-variable 
+EXAMPLE: 
+*the_computer 
+MEANING: 
+The expression *pointer-variable is a reference to the object 
+pointed to by pointer-variable. When used on the right-hand 
+side of an assignment, it is the value of the object: 
+Computer my_computer = *the_computer; 
+Now, my_computer contains a copy of the Computer object 
+referenced by the pointer variable the_computer. 
+When used on the left-hand side of an assignment 
+*the_computer = your_computer; 
+then the referenced object is assigned the value of 
+the right-hand side.
+
+SYNTAX 
+Accessing a Class Member through the Class Member Access Operator
+FORM: 
+pointer-variable->member-name 
+EXAMPLE: 
+the_computer->to_string(); 
+my_ram = the_computer->ram_size; 
+the_computer->ram_size = 1024; 
+MEANING: 
+The expression pointer-variable->member-name is a reference to 
+the member of the object pointed to by pointer-variable. 
+If member-name is a function, then that function is called. 
+If member-name is a data field, then when the expression is 
+used on the right-hand side of an assignment, it is the value of 
+the data field. When the expression is used on the left-hand 
+side of an assignment, then the referenced data field is assigned 
+the value of the right-hand side. The expression 
+pointer-variable->member-name 
+is equivalent to 
+(*pointer-variable).member-name 
+but the -> operator is considered easier to read. 
+Also, the -> operator can be overloaded, but the dot operator cannot.
+
+PROGRAM STYLE 
+When to Reference an Object through a Pointer Variable 
+You have seen two different ways to create and reference 
+Computer objects: Computer my_computer("Acme", "Intel P4 2.4", 512, 60); 
+Computer* my_computer = new Computer("Acme", "Intel P4 2.4", 512, 60); 
+What is the difference between these two statements? 
+The first creates a type Computer object and references it through variable my_computer 
+(for example, my_computer.to_string()). The second creates a Computer object and references 
+it through a pointer to a Computer variable (for example, my_computer->to_string()). 
+Use the first approach when you want the variable my_computer always to reference 
+an object that is type Computer. Use the second approach when you want flexibility; 
+it allows my_computer to reference an object of type Computer or any of its derived classes. 
+
+SYNTAX 
+Virtual Function Definition 
+FORM: 
+virtual function-declaration; 
+virtual function-declaration { function-body } 
+EXAMPLE: 
+virtual std::string to_string() const; 
+MEANING: 
+If the function declared by function-declaration is overridden in a derived class, 
+and if this function is called through a pointer to (or reference to) the base class, 
+then the function body associated with the actual object pointed to (or referenced) 
+will be executed. If a function is declared virtual in a base class, it continues 
+to be virtual in all derived classes. It is, however, a good practice to include the 
+virtual declaration in the derived classes too, for documentation purposes.
+
+PITFALL 
+Failure to Declare a Member Function virtual in a Base Class 
+Generally, when we override a function, we intend to use polymorphism to 
+reference objects of it and its derived classes. However, 
+if we omit the keyword virtual, then the C++ compiler will determine 
+the function to be called at compile time, based on the type of the pointer 
+and not on the type of the object pointed to.
+
+PITFALL 
+Overridden Member Functions Must Have the Same Return Type 
+If you write a member function in a derived class that has the same signature 
+as one in the base class but a different return type, you will get an error message.
+
+PROGRAM STYLE 
+Declaring a virtual Destructor 
+A class’s destructor is called when an object of that class is deleted or goes out of scope. 
+Its purpose is to release any resources (such as dynamically allocated memory for 
+classtype data members) that the class owns. Suppose a derived-class object is 
+created using the new operator, and the pointer to it is stored in a pointer to 
+the base-class variable. If the destructor is not virtual, then only the base-class 
+destructor will be called when the delete operator is invoked through the pointer. 
+Therefore, when you declare a member function to be virtual in a class, you should 
+always declare the destructor virtual even if the destructor does nothing. 
+In our Computer class example we should include the following: 
+virtual ~Computer() {} 
+This declares a virtual destructor that performs no operation. 
+Some compilers will issue a warning message if the virtual destructor is omitted.
+
+SYNTAX 
+Abstract Function Definition 
+FORM: 
+virtual function-declaration = 0; 
+EXAMPLE: 
+virtual double percent_protein() const = 0; 
+INTERPRETATION: 
+The function declared by function-declaration is declared to be an abstract function. 
+The expression = 0; 
+is given in place of the function body and must be specified in the class declaration. 
+You may also see the term pure virtual function to refer to an abstract function.
+
+PITFALL 
+Omitting the Definition of an Abstract Function in a Derived Class 
+If you write class Vegetable and forget to define member function percent_protein, 
+the class Vegetable will also be abstract. If you subsequently 
+attempt to declare an object of type Vegetable, you will get a syntax error. 
+
+DESIGN CONCEPT 
+The Importance of Strong Typing 
+Suppose C++ did not check the expression type and simply performed the assignment 
+Lap_Top* a_laptop = new Computer( ... );    // Incompatible types 
+Further down the line, we might attempt to apply a Lap_Top function to the object 
+referenced by a_laptop. Because a_laptop is type Lap_Top*, the compiler would 
+permit this. If a_laptop were pointing to a type Lap_Top object, 
+then performing this operation would do no harm. But if a_laptop were 
+pointing to an object that was not type Lap_Top, 
+performing this operation would cause either a run-time error or 
+an undetected logic error. It is much better to have the compiler 
+tell us that the assignment is invalid.
+
+SYNTAX 
+Dynamic Cast 
+FORM: 
+dynamic_cast<class-name*>(object-name) 
+EXAMPLE: 
+dynamic_cast<Lap_Top*>(a_computer) 
+INTERPRETATION: 
+A pointer of type class-name is created to object object-name, 
+provided that object-name is an actual object of type class-name 
+(or a derived class of classname). If object-name is not type class-name, 
+the result is a null pointer.
+
+PITFALL 
+Run-time Type Identification 
+If you are using a Microsoft compiler, you may get a warning message 
+that Run-time Type Identification is needed. 
+You must set a compiler switch (/GR) to enable this or dynamic_cast will cause a 
+run-time error.
+
+SYNTAX 
+Namespace Declaration 
+FORM: 
+namespace name { ... }
+EXAMPLE: 
+namespace game { ... }
+INTERPRETATION: 
+All identifiers (e.g., functions, variables, etc.) defined within the block 
+following the name are within that namespace. Namespaces are open; 
+this means that you may have more than one namespace declaration with 
+the same name in your program. The identifiers defined within the different 
+declarations are merged.
+
+PROGRAM STYLE 
+When to Use Namespaces 
+The default namespace facility is intended for use during the early stages of 
+implementing classes or for small prototype programs. If you are developing an 
+application that has several classes that are part of a hierarchy of classes, 
+you should declare them all to be in the same namespace. 
+The namespace declaration will keep you from accidentally referring to classes by 
+their short names in other classes that are outside the namespace.
+
+SYNTAX 
+using Declaration 
+FORM: 
+using namespace::name; 
+EXAMPLE: 
+using std::cout; 
+MEANING: 
+The qualified name is now a member of the namespace in which the using declaration appears. 
+In this example, we can now use the name cout without prefixing the namespace qualifier 
+std:: in front of it.
+
+SYNTAX 
+using Directive 
+FORM: 
+using namespace namespace-name; 
+EXAMPLE: 
+using namespace std; 
+MEANING: 
+All of the names defined in namespace-name are now defined as such within the current 
+namespace.
+
+PROGRAM STYLE 
+A using Declaration Versus a using Directive 
+You are probably in the habit of beginning your programs as follows: 
+#include <iostream> 
+// Other include directives 
+using namespace std; 
+... 
+As long as your programs are small, this generally does not cause a problem. 
+But you should recognize that the standard library is quite large and defines a 
+very large number of names. In many implementations the include directive 
+#include <iostream> brings in a large number of other headers. 
+Many of these headers you would expect, such as <istream> and <ostream>, 
+but it also may include some headers that you never heard of, such as <locale>, 
+and others you may not expect, such as <string>. Therefore, if your program is going to 
+access only cout, then a using declaration is preferred: 
+#include <iostream> 
+// Other include directives 
+using std::cout; 
+...
+
+PROGRAM STYLE 
+using Declarations and using Directives in Header Files 
+Our definition of the class Person included a component of the class string from 
+the standard library. You may be wondering why we didn’t write the header file as: 
+#ifndef PERSON_H_ 
+#define PERSON_H_ 
+#include <string> 
+using namespace std; 
+class Person { 
+... 
+string name; 
+}; 
+Now assume that you start to write the game program we discussed in Example 3.6 and 
+define your own class map. You decide that you need a Person class in your game program 
+and use this revised header. Because class Person brings in all the names from 
+namespace std, the game program will not compile, because there is now a 
+name clash between your map and the standard map! Therefore, you should never 
+place a using declaration or using directive inside a header file. Instead 
+you should always explicitly qualify all names that are defined in a namespace 
+with their namespace name; 
+for example, 
+std::cout.
+
+SYNTAX 
+friend Declaration 
+FORM: 
+friend function-name; 
+friend class class-name; 
+EXAMPLE: 
+friend foo; 
+MEANING: 
+The named function or class is granted access to the private and 
+protected members of the class in which the friend declaration appears.
+
+SYNTAX 
+Instantiating a Template Class
+FORM: 
+template-class-name<argument-list> object-name; 
+EXAMPLE: 
+some_container<int> call_lengths; 
+some_container<Person> people; 
+MEANING: 
+If one doesn’t already exist, a distinct copy of the template class is created by 
+substituting the arguments for the parameters. This is very similar to what happens 
+when a function is called, except that this substitution occurs when the program 
+is being compiled. Generally the arguments are types (either built-in or class types). 
+In this example, two versions of the template class some_container are created: one to 
+hold ints and the other to hold People objects. The classes some_container<int> and 
+some_container<People> are distinct classes. 
+
+PROGRAM STYLE 
+Use of operator[] versus at 
+As discussed in Chapter 2, the fact that C++ does not perform range checking on array 
+bounds has led to many problems, including many security holes in modern operating systems. 
+Unlike function at, the standard vector subscripting operator does not perform range 
+checking, leaving the door open for these problems. Although the subscripting operator 
+is more error prone, it is also more convenient to use, so most programmers use it 
+rather than member function at. In the next section, we show how you to 
+redefine the subscripting operator to perform range checking.
+
+SYNTAX 
+Defining a Template Class
+FORM: 
+template<formal-parameter-list> class class-name { ... } 
+EXAMPLE: 
+template<typename Item_Type> class vector { ... } 
+template<class Item_Type> class bag { ... } 
+template<typename Item_Type, size_t MAX_SIZE> class bounded_list { ... } 
+MEANING: 
+The class class-name is defined to take one or more template parameters. 
+A template parameter follows the same syntax as a function parameter. 
+type-name parameter-name 
+where type-name is the name of the parameter’s type, and parameter-name is the 
+identifier that is used to designate this parameter. Generally you use the keyword 
+typename or the keyword class for type-name. This indicates that the parametername is to 
+be treated as a type within the body of the template class. You can also declare 
+additional parameters for the template class that are built-in types or previously 
+defined class types (see the last example above). 
+Note: The original C++ syntax used class to designate either classes or built-in types 
+as template parameters, but the C++ standard introduced the alternative usage of typename 
+as being a more accurate term. While typename is the preferred usage for new applications, 
+the C++ standard uses class.
+
+
+
