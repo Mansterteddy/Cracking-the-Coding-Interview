@@ -996,5 +996,92 @@ as template parameters, but the C++ standard introduced the alternative usage of
 as being a more accurate term. While typename is the preferred usage for new applications, 
 the C++ standard uses class.
 
+PROGRAM STYLE 
+Using the Postfix (or Prefix) Operator with a Subscript 
+Some programmers prefer to combine the last two statements in the push_back function 
+and write them as the_data[num_items++] = the_value; This is perfectly valid. 
+C++ uses the current value of num_items as the subscript for array access 
+and then increments it. The only difficulty is the fact that two operations 
+are written in one statement and are carried out in a predetermined order. 
+If you are unsure of the order, you might select prefix increment when you needed 
+postfix increment, or vice versa.
 
+SYNTAX 
+Defining the Destructor 
+FORM: 
+~class-name() {body} 
+EXAMPLE: 
+~vector() {delete[] the_data;} 
+INTERPRETATION: 
+The function named ~class-name is the destructor for the class class-name. 
+The purpose of the destructor is to supplement any actions taken by the default destructor. 
+Specifically, it is to release any resources owned by the object, such as dynamically 
+allocated memory. 
 
+类中什么时候使用this？
+类中的变量和函数是隐式调用this的，也就是说可以不用写明this，就可以调用类中变量和成员函数
+1、当类中的名字和局部变量同名时
+2、要返回这个对象本身时。
+
+PITFALL 
+Failure to Define the Assignment Operator, Copy Constructor, and Destructor 
+If a class dynamically allocates a resource such as dynamically allocated memory, 
+then it must define the assignment operator, copy constructor, and destructor. 
+This is known are the “rule of three.” Generally, if you define one of these three 
+functions in a class, you must define all three of them, since they have to work 
+consistently. If you define the assignment operator and not the copy constructor, 
+then copies made by one may not be the same as copies made by the other. 
+For example, the default copy constructor and assignment operator make shallow copies. 
+If you define only a copy constructor that makes a deep copy, it will not work 
+consistently with the default assignment operator. If you omit the destructor, 
+then there is a potential for a memory leak.
+
+PROGRAM STYLE 
+Use of struct 
+The keywords class and struct are effectively synonymous in C++. The only difference 
+is that members of classes are private by default, whereas members of structs are 
+public by default. Most C++ programmers have adopted the practice of using struct 
+only to define a grouping of data that is to be publicly accessible. 
+The only member functions defined are simple constructors that initialize the data. 
+Such structs are known as “Plain Old Data” (POD) and can be used as function 
+parameters to functions written in other programming languages such as C.
+
+PITFALL 
+Falling Off the End of a List 
+If node_ptr is at the last list element and you execute the statement 
+node_ptr = node_ptr->next; 
+node_ptr will be set to NULL, and you will have fallen off the end of the list. 
+This is not an error. However, if you execute this statement again, 
+you will probably get a run-time error. The exact error message is operating system 
+dependent, as discussed in Chapter 2.
+
+PROGRAM STYLE 
+Testing Whether There Are More List Nodes to Process 
+When testing whether there are more elements of an array or vector to process, 
+we evaluate an expression of the form index < array_size, which will be true or false. 
+However, we test whether there are more nodes of a list to process by comparing the 
+current iterator position (iter) with a_list.end(), the iterator position just past the
+ end of the list. We do this by evaluating the expression iter != a_list.end() instead of 
+ iter < a_list.end(). The reason we use != instead of < is that iterators effectively are 
+ pointers to the individual nodes and the physical ordering of the nodes within memory is 
+ not relevant. In fact, the last node in a linked list may have an address that is 
+ smaller than that of the first node in the list. Thus, using iter < a_list.end() 
+ would be incorrect because the operator < compares the actual memory locations 
+ (addresses) of the list nodes, not their relative positions in the list. 
+ The other thing that is different is that we use prefix increment (++iter) instead of 
+ postfix increment with iterators. This results in more efficient code.
+
+PITFALL 
+Attempting to Reference the Value of end() 
+The iterator returned by the end function represents a position that is just past the 
+last item in the list. It does not reference an object. If you attempt to dereference an 
+iterator that is equal to this value, the results are undefined. This means that your 
+program may appear to work, but in reality there is a hidden defect. Some C++ library 
+implementations test for the validity of an iterator, but such verification is not 
+required by the C++ standard. When we show how to implement the list iterator, 
+we will show an implementation that performs this validation.
+
+prefix和postfix
+prefix直接加 postfix 先保存当前值 再加
+前者更有效率
+ 
