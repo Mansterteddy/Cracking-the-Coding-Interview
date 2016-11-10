@@ -1085,3 +1085,87 @@ prefix和postfix
 prefix直接加 postfix 先保存当前值 再加
 前者更有效率
  
+SYNTAX 
+Accessing a Type Defined Inside a Template Class from Within a Template Class
+FORM: 
+typename template-class::the-type-name 
+EXAMPLE: 
+typename std::list<Item_Type>::const_iterator 
+MEANING: 
+The identifier the-type-name is the name of a type and not the name of a data field or member function. 
+Under some circumstances within a template class or function, the compiler cannot tell whether a 
+reference to another template class identifier is a type name or an identifier that names a data field or function. 
+Placing the keyword typename in front of such references resolves the ambiguity. Even where there is no ambiguity, 
+the standard requires you to use the keyword typename. On the other hand, outside of template classes and 
+functions there is no potential ambiguity, so the use of typename is illegal.
+
+PITFALL 
+Misusing typename 
+If you fail to use the keyword typename where it is required, you may get a warning or error message. 
+The g++ compiler, for example, gives the message: 
+warning: 'typename KW::list<Item_Type>::const_iterator is implicitly a typename 
+warning: implicit typename is deprecated, please see the documentation for details 
+Different compilers will have different error messages and may not issue a message under the same circumstances. 
+On the other hand, if you use the keyword typename outside of a template class or function, you will 
+get an error message.
+
+PITFALL 
+Failure to Use const_iterator to Reference a const List 
+If we declared iter to be an iterator instead of a const_iterator, the function print_list would fail to 
+compile, with an error message equivalent to: 
+test_list.cpp: In function 'void print_list(const KW::list<int>&)': test_list.cpp:122: 
+conversion from 'KW::list<int>::const_iterator' to non-scalar type 'KW::list<int>::iterator' requested 
+This is the error message produced by the g++ compiler. Other C++ compilers will produce similar error messages. 
+If we were allowed to use an iterator (instead of a const_iterator), we could then use it to change the 
+contents of the list that was passed as a parameter to the function print_list.
+
+PROGRAM STYLE 
+Delegation Pattern 
+Delegation is a programming technique or OOD pattern that is used frequently. Through delegation, 
+you can easily implement a new class that has an existing class as a component. 
+If the new class and old class have similar functions, then you can implement the new class functions 
+by delegation to the functions in the existing class.
+
+SYNTAX 
+Defining an Alias for a Type
+FORM: 
+typedef original-type-name new-type-name; 
+EXAMPLE: 
+typedef typename std::list<Item_Type>::const_iterator const_iterator; 
+typedef Item_Type item_type; 
+MEANING: 
+The identifier new-type-name may be used as a type name, and it will have the same meaning as original-type-name. 
+In many compilers this is done by a straightforward text substitution. Thus error messages that make 
+reference to new-type-name will be shown using original-type-name.
+
+SYNTAX 
+Defining a Template Function
+FORM: 
+template<typename T1, ... , typename Tn> 
+return-type function-name(Ti, ... , Tj) 
+EXAMPLES: 
+template<typename Item_Type> list<Item_Type>::iterator find(list<Item_Type>& a_list, const Item_Type& target)
+template<typename iterator, typename Item_Type> iterator find(iterator first, iterator last, const Item_Type& target) 
+MEANING: 
+The function function-name takes parameters of the template types T1 through Tn. The template parameter types 
+are listed following the keyword template and must also be included in the function signature. 
+The order of the parameters in the function signature does not need to be the same as they are 
+following the keyword template, but each parameter type must be used at least once.
+
+SYNTAX 
+Calling a Template Function 
+FORM: 
+function-name(actual-parameter-list) 
+EXAMPLE: 
+find(list_1.begin(), list_1.end(), 10) 
+MEANING: 
+The types of the actual parameters are matched to the template type parameters. The template function is 
+then instantiated with the parameter matching specified in the call. 
+In our example the type of the actual argument list_1.begin() is a list<int>::iterator, 
+as is the type of the second argument list_1.end(). The third parameter has the type int. 
+Therefore, the template parameter Iterator is bound to list<int>::iterator, 
+and the template parameter Item_Type is bound to int. The matching of the parameter types to template parameters 
+is done at compile time. This is a very powerful feature of C++ that is used by the STL to do some fairly 
+amazing things.
+
+
