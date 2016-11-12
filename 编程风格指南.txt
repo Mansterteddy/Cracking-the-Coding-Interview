@@ -1168,4 +1168,116 @@ and the template parameter Item_Type is bound to int. The matching of the parame
 is done at compile time. This is a very powerful feature of C++ that is used by the STL to do some fairly 
 amazing things.
 
+SYNTAX 
+Declaring inline Functions
+FORM: 
+inline function-declaration {body} 
+EXAMPLE: 
+inline void swap(vector<Item_Type>& x, vector<Item_Type>& y) { x.swap(y); } 
+MEANING: 
+The compiler replaces a call to that function with the code contained in the function body. 
+Such code executes faster. Since the compiler must be aware of the code to be generated, 
+inline function definitions must be placed in header files.
+
+PROGRAM STYLE 
+Specializing the swap Function 
+Any class that dynamically allocates memory, or contains objects with dynamically 
+allocated memory—a vector, for example—should provide a swap member function and 
+a specialization for the swap function. The swap member function should be written 
+as follows: 
+void swap(class_name& other) { 
+// Use the std::swap function to swap each data field. 
+// . . . 
+} 
+The specialization should be defined in the declaration file (the .h file) and should be 
+written as follows: 
+inline void swap(class-name& x, class-name& y) { x.swap(y); }
+
+PROGRAM STYLE 
+Using an Iterator as a Loop Control Variable 
+The string class provides two ways to access individual characters: using an iterator 
+or using an index. Therefore, you could write the loop in function fill_stack as follows: 
+for (string::const_iterator itr = input_string.begin(); itr != input_string.end(); ++itr) { 
+char_stack.push(*itr); 
+} 
+This is because the string class provides all of the functions required for a sequential 
+container. Using an iterator instead of an index is more general and would allow you to 
+replace the string input parameter with a list parameter.
+
+PITFALL 
+Attempting to Pop an Empty Stack 
+If you attempt to reference the top of or to pop an empty stack, your program will probably 
+halt and report a run-time error. The nature of the error message will depend on the compiler 
+and operating system. Under Linux you will probably get the message segmentation fault, 
+and under Windows you will get an error dialog box reporting an illegal attempt to 
+access memory. It is also possible that no error is reported at all. You can guard 
+against this error by testing for a nonempty stack before calling top or pop.
+
+PROGRAM STYLE 
+Declaring Constants 
+We declared OPEN and CLOSE as global constants instead of declaring them locally in 
+the functions where they are used (is_open and is_close). There are two reasons for 
+this. First, it is a more efficient use of memory to declare them as constants 
+instead of having to allocate storage for these constants each time the function is 
+called. Also, if a new kind of parenthesis is introduced, it is easier to 
+locate and update the class constants instead of having to find 
+their declarations inside a function. However, relying on global constants makes 
+functions less portable (less easy to drop in elsewhere), 
+so this dependence should be mentioned in the function’s comment header.
+
+有些类中的同一操作，参数分为两种，一种是const，一种是非const，这主要用作左操作符和右操作符。
+
+PROGRAM STYLE 
+Reason for Including File Stack.tc in File stack.h 
+In earlier programming, we were able to write the definition file (extension .h) for a 
+class and its implementation file (extension .cpp) as separate files, and we would 
+include the .h file at the beginning of the .cpp file. C++ does not permit this for 
+template classes, however, because for each instantiation of a template class in 
+a client program the compiler needs to see the template to create an instantiation for 
+those member functions that are used in the current instantiation. Therefore, 
+we have placed the implementation in a separate file and given it the extension 
+.tc to specify template implementation files.  The .tc file, while not a typical header 
+file, is still an included file, so it should not contain using directives or 
+using statements. An alternate approach would be to replace each function declaration 
+in file stack.h with its actual definition (see Listing 5.6). 
+This is simpler for the case where we only have a single implementation of an ADT; 
+however, it does not provide a separate interface file and therefore makes it a bit more 
+difficult to provide different implementations of the ADT.
+不能在头文件中使用using！
+因为.h文件是覆盖到总文件中的，因此using就被引入了整个文件，进而使得整体文件中莫名其妙地引入了一个using，
+造成命名空间污染。
+
+ADT可以使用不同的方式来实现，.tc文件可以方便地调整不同的实现方式
+
+PROGRAM STYLE 
+Creating Your Own Exception Class 
+The program would work just the same if we did not bother to declare the Syntax_Error class and just threw a 
+std::exception object each time an error occurred. However, we feel that this approach gives the user a more meaningful description of 
+the cause of an error. Also, if other errors are possible in a client of this class, any Syntax_Error exception can be caught 
+and handled in a separate catch clause.
+
+PROGRAM STYLE 
+Using #ifdef, #else to Select a Stack Implementation 
+We select the stack implementation and define data field operator_stack using 
+the #ifdef, #else compiler directive. This allows us to select either the stack 
+implementation in the user namespace KW or the stack implementation in the standard 
+namespace depending on the switch USEKW. If the switch USEKW is defined, 
+the preprocessor inserts the following code: 
+#include "stack.h" 
+... 
+KW::stack<char> operator_stack; 
+If the switch USEKW is not defined, the preprocessor inserts the following code instead: 
+#include <stack> 
+... 
+std::stack<char> operator_stack; 
+We can define this switch when we compile the program using the -D compiler directive. 
+For example, to use the KW implementation using the gcc compiler, we would compile 
+using the following command: 
+g++ -DUSEKW -o Infix_To_Postfix Infix_To_Postfix.cpp Test_Infix_To_Postfix.cpp 
+The -DUSEKW defines the macro symbol USEKW. The -o specifies the name given to the 
+executable file (Infix_To_Postfix). If this is omitted the executable file 
+is given the strange name a.out. Without the –DUSEKW, the switch USEKW would not be 
+defined, and the standard stack would be used. The various integrated development 
+environments also provide a way to set this compiler directive.
+
 
