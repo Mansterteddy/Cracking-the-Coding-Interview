@@ -1280,4 +1280,13 @@ is given the strange name a.out. Without the –DUSEKW, the switch USEKW would n
 defined, and the standard stack would be used. The various integrated development 
 environments also provide a way to set this compiler directive.
 
+动态分配很多小对象，是一件很费空间的事情。
 
+对于大规模的大对象集合，可以使用deque，因为deque的实现，不像vector，vector是一个数组，每个数组
+包含对象。而deque使用的是多个数组结合的方式，第一个数组包含的是指向数组的指针，指针指向的数组包含了
+对象。为什么要用这种表达方式？
+
+ For large collections of large objects, the deque can be used instead of the vector to 
+ minimize space overhead and the cost of reallocation.
+
+ 
