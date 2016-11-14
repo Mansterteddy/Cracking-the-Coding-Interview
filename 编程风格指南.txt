@@ -1289,4 +1289,90 @@ environments also provide a way to set this compiler directive.
  For large collections of large objects, the deque can be used instead of the vector to 
  minimize space overhead and the cost of reallocation.
 
- 
+ PITFALL 
+ Infinite Recursion and Stack Overflow 
+ If you call function factorial with a negative argument, you will see that 
+ the recursion does not terminate. It will continue forever, because the 
+ stopping case, n equals 0, can never be reached, as n gets more negative 
+ with each call. For example, if the original value of n is –4, you will 
+ make function calls factorial(–5), factorial(–6), factorial(–7), and so on. 
+ You should make sure that your recursive functions are constructed so that 
+ a stopping case is always reached. One way to prevent the infinite recursion 
+ in this case would be to change the terminating condition to n <= 0. 
+ However, this would incorrectly return a value of 1 for n! if n 
+ is negative. A better solution would be to throw an invalid_argument 
+ exception if n is negative. If your program does not terminate properly, 
+ you may see an extremely long display on the console (if the console is 
+ being used to display its results). However, if the recursive 
+ call occurs before any output is displayed, you will see no 
+ output. Eventually you will get a run-time error because there is no more 
+ memory available for your program to execute any more function calls.
+
+explicit关键字是用来修饰类的构造函数，表明该构造函数是显式的。
+如果c++类的构造函数有一个参数，那么在编译的时候就会有一个缺省的转换操作，
+将该构造对应数据类型的数据转换成该类对象
+比如：
+class MyClass
+{
+    public:
+        MyClass(int num);
+}
+
+MyClass obj = 10;
+//equal to MyClass temp(10); MyClass obj = temp;
+
+这种就是所谓的隐式转换。
+
+比如我们声明：
+class string
+{
+    String(int n);
+    String(const char *p);
+}
+
+String s2(10);
+String s3 = String(10);
+这样写都是没有问题的
+
+但是这样写就有问题了
+Stirng s4 = 10;//equal to String s4(10);
+String s5 = 'a';//equal to String s5(int('a'));
+
+为了避免这种隐式转换，我们就需要声明explicit
+
+操作符重载
+操作符可以重载为类成员函数（左操作数可以隐式指定）
+也可以重载为非类成员函数（全局函数）（左操作数必须显示指定）
+
+一元操作符可以是不带参数的成员函数 或者是 带一个参数的非成员函数
+
+二元操作符可以是带一个参数的成员函数 或者是 带两个参数的非成员函数
+
+operator=, operator[], operator(), operator->只能定义成为成员函数
+
+operator->的返回值必须是一个指针或者是能使用->的对象
+
+重载operator++ 和 operator-- 时 带一个int参数表示后缀操作符，不带参数表示前缀操作符
+
+要使用inline关键字
+
+对于同一程序的不同文件，如果inline函数出现的话，其定义必须相同
+
+关键字inline必须与函数定义体放在一起才能使得函数成为内联，仅将inline放在函数声明
+前面不起任何作用。
+
+内联是以代码膨胀（复制）为代价的，省去了函数调用的开销，从而提高函数的执行效率。
+如果执行函数体内代码的时间，相比于函数调用的开销较大，那么效率提高就会少得多。
+同时每一处内联函数的调用都要复制代码，将使得程序的总代码量增大，消耗更多的内存空间。
+
+因此以下几种情况不适合使用内联
+
+1、函数体内的代码过长，使用内联将导致内存消耗代价较高
+
+2、如果函数体内出现循环，那么执行函数体内代码的时间要比函数调用的开销大。
+
+定义在类声明之中的成员函数将自动地成为内联函数
+
+inline不应该出现在函数的声明中
+
+类的构造函数和析构函数也不要随便定义放在类声明中。
