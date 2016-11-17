@@ -1361,18 +1361,111 @@ operator->的返回值必须是一个指针或者是能使用->的对象
 关键字inline必须与函数定义体放在一起才能使得函数成为内联，仅将inline放在函数声明
 前面不起任何作用。
 
+内联函数在编译时直接将函数嵌入到调用程序的主体，省去了调用/返回指令，这样在运行时速度更快。
+通过避免被调用的开销来提高执行效率。
+
+当定义一个内联函数时，需要在函数定义前加上inline关键字，并且将定义放入头文件。
+
 内联是以代码膨胀（复制）为代价的，省去了函数调用的开销，从而提高函数的执行效率。
 如果执行函数体内代码的时间，相比于函数调用的开销较大，那么效率提高就会少得多。
 同时每一处内联函数的调用都要复制代码，将使得程序的总代码量增大，消耗更多的内存空间。
 
 因此以下几种情况不适合使用内联
 
-1、函数体内的代码过长，使用内联将导致内存消耗代价较高
+1、函数体内的代码过长，使用内联将导致内存消耗代价较高。
 
 2、如果函数体内出现循环，那么执行函数体内代码的时间要比函数调用的开销大。
 
-定义在类声明之中的成员函数将自动地成为内联函数
+定义在类声明之中的成员函数将自动地成为内联函数。
 
 inline不应该出现在函数的声明中
 
 类的构造函数和析构函数也不要随便定义放在类声明中。
+
+PITFALL 
+Failure to Qualify a Template Base Class Member Name 
+If you fail to qualify a template base class member name within a template derived class, you may get an error message. 
+However, if this name happens to be defined outside the class, you will not get an error, but your program will not execute as expected. 
+This is because the other name will be used. For example, if there was a global variable root, and 
+we omitted this-> from the call to find, then find would start the search using the contents of this global variable.
+
+基类和派生类
+
+class Base
+{
+    public:
+        Base(){};
+        Base(int m){};
+        ~Base(){};
+}
+
+class Derived: public Base
+{
+    private:
+        int n;
+    public:
+        Derived(int m):n(m){}
+        ~Derived(){};
+}
+如果声明Base(){}，那么声明Derived类型变量的时候，会默认调用Base()构造函数
+如果不声明Base(){}，同时不是Derived(int m):n(m) Base(m){}，那么就会报错
+派生类的析构函数，会默认调用基类的析构函数
+
+公用派生类拥有基类的全部功能
+由于派生类中包含从基类中继承的成员，因此可以将派生类的值赋给基类对象。
+
+1、派生类对象可以向基类对象赋值
+
+A a1;//基类
+B b1;//公用派生类
+a1 = b1;
+
+但是此时a1不能访问派生类中的成员。
+
+2、派生类对象可以替代基类对象 向基类对象的引用进行赋值或者初始化
+A a1;
+B b1;
+A& r = a1;
+r = b1;
+或者
+A& r = b1;
+
+注意此时r并不是b1的别名，也不和b1共享同一段存储单元 它只是b1中基类部分的别名
+
+3、
+fun: void fun(A& r)
+{
+    cout<<r.num<<endl;
+}
+这时可以使用fun(b1);其中b1是派生类B类型
+这里也只能输出派生类中基类成员的值
+
+4、派生类对象的地址可以赋值给指向基类对象的指针变量 也就是说 指向基类对象的指针变量也可以指向派生类对象
+
+但是通过指向基类对象的指针，只能访问派生类中的基类成员，而不能访问派生类增加的成员。
+
+有的时候，多继承很容易引起冲突
+比如A->B,A->C,同时D多继承B和C
+那么在这个派生类中保留间接基类的多份同名成员，这样会占用较多的存储空间，还容易产生命名冲突。
+为了解决这个问题，引入了虚基类。
+class A{}
+class C: virtual public A{}
+这样就使得在派生类中只保留间接基类的一份成员了。
+比如B从A中继承了变量a，C也从A中继承了变量a，这是D继承B和C就会有两个变量a，发生冲突。通过虚继承，就只会保留一个a的拷贝。
+但是虚继承中，为了避免矛盾，在最后的派生类中，不仅要负责对其直接继承的基类进行初始化，同时还要负责对虚基类的初始化。
+class D: virtual public B, virtual public C
+{
+    private:
+        int d;
+    public:
+        D(int a, int b, int c, int d): A(a), B(a, b), C(a, c), d(d){}
+}
+
+PROGRAM STYLE 
+A Generic Huffman_Tree Class 
+We chose to implement a nongeneric Huffman_Tree class to simplify the coding. However, it may be desirable to build a Huffman tree 
+for storing strings (for example, to encode words in a document instead of the individual letters) or for storing groups of pixels 
+in an image file. We can do this by making the Huffman_Tree, Huff_Data and Compare_Huffman_Tree classes template classes. 
+The template parameter would represent the type of the symbols. The implementation of the member functions would need to be 
+included in the .h file that contains the class definitions.
+
