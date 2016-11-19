@@ -1469,3 +1469,68 @@ in an image file. We can do this by making the Huffman_Tree, Huff_Data and Compa
 The template parameter would represent the type of the symbols. The implementation of the member functions would need to be 
 included in the .h file that contains the class definitions.
 
+SYNTAX 
+const_cast 
+FORM: 
+const_cast<target_type>(value) 
+EXAMPLE: 
+const_cast(Entry_Type&)(*(ret.first)) 
+MEANING: 
+If the type of value was a const reference type (or const pointer type), it is converted to target_type, where target_type is the 
+corresponding non-const reference
+(or pointer) type. You must be careful using this construct, because it allows you to violate the protection provided by the language. For example, a const_cast could be used to change the key of the item stored in either a set or a map. The set and map use binary search trees, so changing a value could make the tree cease to be a binary search tree. The insert, erase, and find operations would no longer work. In this case we knew that the Value_Type part of the Entry_Type could be changed without harming the structure of the_set.
+
+Function Call Operator
+When a user-defined class overloads the function call operator, operator(), it becomes a FunctionObject Type.
+Many standard algorithms, from std::sort to std::accumulate accept objects of such types to customize behavior.
+There are no particular notable canonical forms of operator(), but to illustrate the usage
+struct Sum
+{
+    int sum;
+    Sum() : sum(0) {}
+    void operator()(int n) {sum += n};
+};
+
+Sum s = std:for_each(v.begin(), v.end, Sum())    
+
+PITFALL 
+Side Effect of Retrieving a Missing Key 
+In function build_index, the statement index[word].push_back(line_num); uses the expression index[word] to retrieve the value (a list) 
+associated with string word. If this is the first occurrence of word, a side effect of the retrieval is that an empty list is 
+inserted in index as the value associated with word, and the line number is inserted into this list. This is just what we want to happen. 
+However, there are other situations when we don’t want to insert a new entry into the map if the key is missing. 
+In these cases, we should use find to perform the retrieval, as in the following fragment. 
+const_iterator itr_word = index.find(word); 
+if (itr_word != index.end()) 
+cout << "first occurrence is on line # " << itr_word->second.front()) << endl; 
+else 
+cout << word << " is not in the index\n" 
+The if statement displays either the line number of the first occurrence of word (itr_word->second.front()) or 
+a message that word is not present.
+
+PITFALL 
+Not Defining the Compare Function as a Total Ordering Relationship 
+Suppose we defined Compare_Person as follows: 
+struct Compare_Person 
+{ 
+bool operator()(const Person& p1, const Person& p2) 
+{ 
+if (p1.family_name < p2.family_name) 
+return true; 
+else 
+return p1.given_name < p2.given_name; 
+} 
+} 
+Then “Jones, Tom” (family_name is "Jones", given_name is "Tom") would be less than “Smith, John” 
+(family_name is "Smith", given_name is "John") as expected, but “Smith, John” would also be less than “Jones, Tom” 
+(since "John" < "Tom"). A map with this as a Compare function will give very strange results.
+
+DESIGN CONCEPT 
+Proposed Standard Hash Function Class 
+Although hash tables were not included in the original C++ standard, there has long been a desire for their inclusion. 
+Currently the C++ standard is undergoing revision, and hash tables are one of the proposed additions. 
+One issue with including hash tables is how to designate the hash function. The proposed solution is to define a 
+template function class hash. This class would be specialized for the primitive types and other librarydefined types such as string. 
+The type hash<type> would then designate the hash function class for the type type, and hash<type>() would designate the function object. 
+The expression hash<type>()(key) would then evaluate the function for the value key.
+
