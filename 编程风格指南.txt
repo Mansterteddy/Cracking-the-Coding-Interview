@@ -1534,3 +1534,54 @@ template function class hash. This class would be specialized for the primitive 
 The type hash<type> would then designate the hash function class for the type type, and hash<type>() would designate the function object. 
 The expression hash<type>()(key) would then evaluate the function for the value key.
 
+SYNTAX 
+Initializing Static Data Members of a Template Class 
+FORM: 
+template<template parameter declarations> 
+type class_name<template parameters>::member_name = value; 
+EXAMPLE: 
+template<typename Key_Type, typename Value_Type> 
+typename hash_map<Key_Type, Value_Type>::Entry_Type 
+hash_map<Key_Type, Value_Type>::dummy = 
+std::pair<const Key_Type, Value_Type>(Key_Type(), Value_Type()); 
+MEANING: 
+Memory is allocated for the static object class_name::member_name, and 
+it is initialized to the specified value. This can become quite complicated, 
+especially where the type of the data member is also defined within 
+the template class. In this example 
+typename hash_map<Key_Type, Value_Type>::Entry_Type is the type of 
+the data field, hash_map is the class, dummy is the member name, 
+and std::pair<const Key_Type, Value_Type>(Key_Type(), Value_Type()) 
+is the value.
+
+SYNTAX 
+Constant Pointer Declaration 
+FORM: 
+type* const name; 
+EXAMPLE: 
+static Entry_Type* const DELETED; 
+MEANING: 
+By placing the const qualifier after the *, the identifier name 
+is declared to be a constant pointer. That is the 
+value of the pointer (the address of the location pointed to) remains 
+constant. The value pointed to, however, is not declared to be a constant. 
+
+PROGRAM STYLE 
+Use of size_t versus int for Indexes 
+Notice that we declared index to be of type size_t. This is an unsigned type, which is the type returned by the vector size() function. The C++ compiler defines this type as an unsigned integer type that has sufficient range to represent all index values. (The specific type depends on the architecture of the computer on which the program is to be executed.) By using an unsigned value we are sure that the result of the modulo operator (%) is in the range 0 to the_table.size() - 1. If we defined index and hash_fcn to return int values, then the result of hash_fcn could be negative and the result of the modulo operator could also be negative.
+
+PITFALL 
+Integer Division for Calculating Load Factor 
+Before calling function rehash, function insert calculates the load factor 
+by dividing the number of filled slots by the table size. 
+This is a simple computation, but if you forget to convert the 
+numerator or denominator to double, the load factor will be zero 
+(because of integer division), and the table will not be expanded. 
+This will slow down the performance of the table when it becomes 
+nearly full, and it will cause an infinite loop (in function locate) 
+when the table is completely filled.
+
+为什么copy constructor assignment operator 和 destructor要同时声明？
+因为它们都动态分配内存，因此要同时声明，它们之间也互相帮助。
+这样做的目的也是为了深拷贝，而不是浅拷贝。
+浅拷贝直接把指针复制过去了，这样会出现错误，深拷贝重新申请资源。
