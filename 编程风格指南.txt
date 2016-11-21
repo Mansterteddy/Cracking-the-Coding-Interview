@@ -1585,3 +1585,95 @@ when the table is completely filled.
 因为它们都动态分配内存，因此要同时声明，它们之间也互相帮助。
 这样做的目的也是为了深拷贝，而不是浅拷贝。
 浅拷贝直接把指针复制过去了，这样会出现错误，深拷贝重新申请资源。
+
+DESIGN CONCEPT 
+Iterator Traits 
+You may wonder how the iterator_traits determines the type of the object 
+that the iterator references. Basically, the iterator provides this 
+information. In Chapter 4 we described the list container and showed 
+how to implement its iterator. To keep the explanation simple, 
+we omitted several details, one of which we will now explain. 
+Each container class is required to provide certain typedefs, 
+including one named value_type. Thus, our list class should have had the 
+following declaration: 
+template<typename Item_Type> 
+class list { 
+public: 
+typedef Item_Type value_type; 
+... 
+Likewise, the iterator class (defined within the list class) should have 
+the declaration: 
+class iterator { 
+typedef typename list<Item_Type>::value_type value_type; 
+The iterator_traits class is then defined as follows: 
+template<typename Iterator> 
+struct iterator_traits { 
+typedef typename Iterator::value_type value_type; 
+... 
+}; 
+When the compiler sees the function call: sort(v.begin(), v.end()) 
+it determines that the type of the expressions v.begin() and v.end() 
+is vector<int>::iterator and thus the template parameter Iterator 
+is bound to this type. Therefore the expression 
+typename iterator_traits<Iterator>::value_type 
+becomes 
+typename iterator_traits<vector<int>::iterator>::value_type 
+Since ordinary pointers can be used as iterators, we need to add an 
+additional specialization for iterator_traits. 
+template<typename T> 
+struct iterator_traits<T*> { 
+typedef T value_type; 
+... 
+}; 
+Now in the function call sort(a, a + 20) where a is an array of int, 
+the parameter type is int*, and the template parameter Iterator is 
+bound to this type. Thus the expression 
+typename iterator_traits<Iterator>::value_type
+becomes 
+typename iterator_traits<int*>::value_type 
+The compiler then associates T with int, so that the declaration 
+typedef T value_type; 
+becomes 
+typedef int value_type;
+
+PROGRAM STYLE
+By using the postincrement operator on the iterators, 
+you can copy the current item from one input sequence, append it to 
+the end of the output sequence, and then increment the iterators to 
+that input sequence and the output sequence in one statement. 
+The statement: 
+*out++ = *left++; 
+is equivalent to the following three statements, 
+executed in the order shown: 
+*out = *left; 
+++out; 
+++left; 
+Both the single statement and the group of three statements 
+maintain the invariant that the iterator left references 
+the next item to insert from the left input sequence.
+
+PITFALL 
+Invalid Pointer Arithmetic 
+In the statement 
+RI parent = first + (child – first - 1) / 2;  // Find parent. 
+the expression part is algebraically equivalent to (first + child – 1)/2. 
+However, using this expression would cause a syntax error indicating 
+invalid pointer addition. You can't add pointers, 
+because pointers represent addresses and the result of adding two 
+addresses is not logically meaningful. However, 
+you can subtract two pointers, or you can add or subtract a constant 
+(an offset ) to a pointer. An analogy would be comparing times. 
+If you arrived at place A at 4 PM and at place B at 6 PM, 
+you could subtract the two times to determine that it took you 2 hours to go 
+from place A to place B. But adding the two times would not be meaningful.
+
+PITFALL 
+Falling Off Either End of the Array 
+A common problem when incrementing up or down during the partition process 
+is falling off either end of the array. We used the condition 
+((up != last - 1) && !(*first < *up)) 
+to keep up from falling off the right end of the array. 
+Self-Check Exercise 3 asks why we don’t need to write similar code to 
+avoid falling off the left end of the array.
+
+ 
