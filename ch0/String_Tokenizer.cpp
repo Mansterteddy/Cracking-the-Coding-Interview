@@ -38,7 +38,7 @@ string String_Tokenizer::next_token()
     String_Tokenizer st(person);
     //cout<<st.next_token()<<"h"<<endl;
     //cout<<st.next_token()<<endl;
-    cout<<st.next_token()<<endl;
-    cout<<st.next_token()<<endl;
+    //cout入栈顺序是从右往左的，因此输出顺序可能和正常期望的不太一致。
+    cout<<st.next_token()<<" "st.next_token()<<endl;
     return 0;
 }*/
