@@ -1676,4 +1676,40 @@ to keep up from falling off the right end of the array.
 Self-Check Exercise 3 asks why we don’t need to write similar code to 
 avoid falling off the left end of the array.
 
- 
+ traits是干什么的？
+ 当函数、类或者一些封装的通用算中的某些部分会因为数据类型的不同而导致处理或者逻辑不通（而我们又不希望因为
+ 数据类型的差异而修改算法本身的封装时），traits就会是一种很好的解决方案。
+ 通过定义traits，就可以保证在不同参数的情况下，可以分情况处理，而不用修改算法本身。
+
+SYNTAX 
+Declaring a Virtual Base Class 
+FORM: 
+class derived-class : public virtual base-class { ... };
+EXAMPLE: 
+class Student : public virtual Person { ... }; 
+class Employee : public virtual Person { ... }; 
+MEANING: 
+If a class is derived from two other classes that share a common virtual base class, 
+then only one instance of the base class will be included in the derived class. 
+To ensure that there is no inconsistency in the initialization process, 
+the constructor(s) for the virtual base class(es) is(are) 
+invoked before the constructors of the other base classes. 
+Therefore, if initialization of a virtual base class is required, 
+it must be specified by the constructor of the final derived class.
+
+PITFALL 
+Failure to Initialize a virtual Base Class 
+If a virtual base class needs to be initialized, and a derived class that multiply 
+inherits it does not explicitly initialize it, it will remain uninitialized. 
+For example, if our Student_Worker class had the following constructor: 
+Student_Worker(const std::string& the_name, 
+Address* the_address, double the_rate, const std::string& the_major) 
+: Employee(the_name, the_address, the_rate) , Student(the_name, the_address, the_major) {} 
+it would invoke the Employee and Student constructors. These constructors contain 
+calls to the three-argument Person constructor. However, since Person is a virtual base 
+class, the no-argument constructor for Person is invoked before 
+the constructors for Employee and Student. When the Employee and Student constructors 
+are invoked, their calls to the three-argument Person constructor are not performed.
+
+因此也要显示地初始化Person无参数类
+
