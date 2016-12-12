@@ -1,0 +1,46 @@
+TARGETS = Test_Employee.exe Test_Student.exe Test_Address.exe \
+Test_Student_Worker.exe
+CC = g++
+CCFLAGS = -g -Wall -pedantic
+
+all:	$(TARGETS)
+
+Test_Student_Worker.exe:	Test_Student_Worker.o Student_Worker.o \
+German_Address.o
+	$(CC) $(CCFLAGS) -o $@ $^
+
+Test_Employee.exe:	Test_Employee.o Employee.o German_Address.o
+	$(CC) $(CCFLAGS) -o $@ $^
+
+Test_Student.exe:	Test_Student.o Student.o German_Address.o
+	$(CC) $(CCFLAGS) -o $@ $^
+
+Test_Address.exe:	Test_Address.o German_Address.o
+	$(CC) $(CCFLAGS) -o $@ $^
+
+Test_Address.o:	Test_Address.cpp Address.h
+	$(CC) $(CCFLAGS) -c Test_Address.cpp
+
+German_Address.o:	German_Address.cpp Address.h
+	$(CC) $(CCFLAGS) -c German_Address.cpp
+
+Employee.o:	Employee.cpp Employee.h Address.h
+	$(CC) $(CCFLAGS) -c Employee.cpp
+
+Student.o:	Student.cpp Student.h Address.h
+	$(CC) $(CCFLAGS) -c Student.cpp
+
+Test_Student.o:	Test_Student.cpp Student.h Address.h
+	$(CC) $(CCFLAGS) -c Test_Student.cpp
+
+Test_Employee.o:	Test_Employee.cpp Employee.h Address.h
+	$(CC) $(CCFLAGS) -c Test_Employee.cpp
+
+Student_Worker.o:	Student_Worker.cpp Student.h Employee.h Student_Worker.h \
+Address.h
+	$(CC) $(CCFLAGS) -c Student_Worker.cpp
+
+
+clean:	
+	rm -f *.o
+	rm -f $(TARGETS)
