@@ -1,4 +1,4 @@
-SYNTAX 
+﻿SYNTAX 
 The define Preprocessor Directive
 FORM: 
 #define macro-name macro-definition 
@@ -1712,4 +1712,9 @@ the constructors for Employee and Student. When the Employee and Student constru
 are invoked, their calls to the three-argument Person constructor are not performed.
 
 因此也要显示地初始化Person无参数类
+
+多重继承有个很糟糕的情况叫DOD dimonds of death，也叫做死亡钻石
+多重继承的主要问题是：当祖父类有一个函数时，每个子类都会继承这个函数，随后孙子类声明时，由于存在多个同名函数，
+使得孙子类无效。
+因此c++引入了虚继承，在继承的关键词前加virtual，这样就不会重复继承函数了。
 
