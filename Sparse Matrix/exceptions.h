@@ -28,14 +28,14 @@ class Exception : public exception
 class InvalidDimensionsException : public Exception
 {
 	public:
-		InvalidDimensionsException(const string & message) : Exception(message)	{}
+		InvalidDimensionsException(const string &message) : Exception(message)	{}
 };
 
 
 class InvalidCoordinatesException : public Exception
 {
 	public:
-		InvalidCoordinatesException(const string & message) : Exception(message){}
+		InvalidCoordinatesException(const string &message) : Exception(message){}
 };
 
 #endif

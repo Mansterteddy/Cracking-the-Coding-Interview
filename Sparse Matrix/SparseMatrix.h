@@ -16,8 +16,9 @@ class SparseMatrix
 		SparseMatrix(int n); // square matrix n×n
 		SparseMatrix(int rows, int columns); // general matrix
 
+		//Shallow Copy and Deep Copy
 		SparseMatrix(const SparseMatrix<T> &m); // copy constructor
-		SparseMatrix<T>& operator =(const SparseMatrix<T> &m);
+		SparseMatrix<T>& operator=(const SparseMatrix<T> &m);
 		~SparseMatrix(void);
 
 
@@ -30,42 +31,42 @@ class SparseMatrix
 		// === VALUES ==============================================
 
 		T get(int row, int col) const;
-		SparseMatrix & set(T val, int row, int col);
+		SparseMatrix& set(T val, int row, int col);
 
 
 		// === OPERATIONS ==============================================
 
 		vector<T> multiply(const vector<T> &x) const;
-		vector<T> operator *(const vector<T> &x) const;
+		vector<T> operator*(const vector<T> &x) const;
 
 		SparseMatrix<T> multiply(const SparseMatrix<T> &m) const;
-		SparseMatrix<T> operator *(const SparseMatrix<T> &m) const;
+		SparseMatrix<T> operator*(const SparseMatrix<T> &m) const;
 
 		SparseMatrix<T> add(const SparseMatrix<T> &m) const;
-		SparseMatrix<T> operator +(const SparseMatrix<T> &m) const;
+		SparseMatrix<T> operator+(const SparseMatrix<T> &m) const;
 
 		SparseMatrix<T> subtract(const SparseMatrix<T> &m) const;
-		SparseMatrix<T> operator -(const SparseMatrix<T> &m) const;
+		SparseMatrix<T> operator-(const SparseMatrix<T> &m) const;
 
 
 		// === FRIEND FUNCTIONS =========================================
 
 		template<typename X>
-		friend bool operator ==(const SparseMatrix<X> &a, const SparseMatrix<X> &b);
+		friend bool operator==(const SparseMatrix<X> &a, const SparseMatrix<X> &b);
 
 		template<typename X>
-		friend bool operator !=(const SparseMatrix<X> &a, const SparseMatrix<X> &b);
+		friend bool operator!=(const SparseMatrix<X> &a, const SparseMatrix<X> &b);
 
 		template<typename X>
-		friend ostream& operator <<(ostream &os, const SparseMatrix<X> &matrix);
+		friend ostream& operator<<(ostream &os, const SparseMatrix<X> &matrix);
 
 
 	protected:
 
 		int m, n;
 
-		vector<T> * vals;
-		vector<int> * rows, * cols;
+		vector<T> *vals;
+		vector<int> *rows, *cols;
 
 
 		// === HELPERS / VALIDATORS ==============================================
@@ -77,4 +78,5 @@ class SparseMatrix
 		void insert(int index, int row, int col, T val);
 		void remove(int index, int row);
 };
+
 #endif
