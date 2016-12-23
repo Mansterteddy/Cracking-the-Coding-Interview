@@ -31,7 +31,8 @@ SparseMatrix<T>::SparseMatrix(const SparseMatrix<T>& matrix)
 template<typename T>
 SparseMatrix<T>& SparseMatrix<T>::operator=(const SparseMatrix<T>& matrix)
 {
-	if (&matrix != this) {
+	if (&matrix != this) 
+	{
 		this->destruct();
 		this->deepCopy(matrix);
 	}
