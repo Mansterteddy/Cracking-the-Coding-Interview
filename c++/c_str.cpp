@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 //string是以字符为元素的一种容器，string不一定以'\0'结束，string的长度可以根据length()得到
 //string可以根据下标访问，不能将string直接赋值给char*
 void string_test()
@@ -11,7 +10,7 @@ void string_test()
     //将string直接转换为const char*
     //如果去掉const，无法编译通过
     //const表示不许修改 引入const的目的，就是取代预编译指令，消除缺点，继承优点
-    //const常量，具有不可变形，比如 const int Max = 100; int array[Max];
+    //const常量，具有不可变性，比如 const int Max = 100; int array[Max];
     //便于类型检查，使得编译器对处理内容有更多的了解，消除了一些隐患 例如void f(const int i) 编译器知道i是一个常量 不允许修改
     //可以避免意义模糊的数字出现 同时很方便地进行参数的调整和修改 和宏定义一样 
     //可以保护被修饰的东西，防止意外修改，增强程序健壮性 比如void f(const int i) {i = 10;};会报错

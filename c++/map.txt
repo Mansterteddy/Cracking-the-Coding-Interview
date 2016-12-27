@@ -28,7 +28,7 @@ C++中map容器提供一个键值对容器，map与multimap差别仅仅在于mul
   5   删除数据 
   (1)   my_Map.erase(my_Itr); 
   (2)   my_Map.erase("c"); 
-  还是注意，第一种情况在迭代期间是不能被删除的，道理和foreach时不能删除元素一样。 
+  还是注意，第一种情况在迭代期间是不能被删除的，道理和for each时不能删除元素一样。 
   
   6   迭代数据 
   for   (my_Itr=my_Map.begin();   my_Itr!=my_Map.end();   ++my_Itr)   {} 
