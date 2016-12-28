@@ -1,3 +1,5 @@
+//给定一个点集，构造这个点集中所有直线的hash table，并返回hash value最大的那条直线
+
 #include <iostream>
 #include <map>
 #include <cmath>

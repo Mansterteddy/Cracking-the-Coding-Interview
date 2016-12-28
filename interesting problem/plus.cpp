@@ -1,3 +1,5 @@
+//Implement minus times divide using only plus.
+
 #include <iostream>
 
 using namespace std;

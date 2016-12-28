@@ -1,3 +1,5 @@
+//A = a^i * b^j * c^k i+j+k = constant 在给定constant的情况下，求解最小A
+
 #include <iostream>
 #include <queue>
 
