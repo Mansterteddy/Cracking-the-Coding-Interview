@@ -1,5 +1,7 @@
 //Write a program to sort a stack in ascending order. You should not make any assumptions about how the stack is implemented.
 //The following are the only functions that should be used to write this program: push | pop | peek | isEmpty.
+
+//其实就是插入排序，始终保持栈内的元素时有序的，当新元素push进来时，先从栈中逐个pop，找到最合适的位置，然后push。
 #include <iostream>
 #include <stack>
 #include <queue>

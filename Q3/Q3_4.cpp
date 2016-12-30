@@ -6,6 +6,7 @@
 //A disk can only be placed on top of a larger disk.   
 //Write a program to move the disks from the first rod to the last using Stacks.
 
+//汉诺塔的实现分为两种：1、直接使用栈；2、递归处理。
 #include <iostream>
 #include <stack>
 using namespace std;

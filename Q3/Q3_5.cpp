@@ -1,4 +1,6 @@
 //Implement a MyQueue class which implements a queue using two stacks
+
+//一个栈用于push_front pop_front 一个栈用于push_back pop_back 如果某个栈空了，但是还需要pop，就将另一个栈的内容移过来。
 #include <iostream>
 #include <stack>
 using namespace std;
