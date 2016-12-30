@@ -4,8 +4,9 @@
 //SetOfStacks should be composed of several stacks, and should create a new stack once the previous one exceeds capacity.  
 //SetOfStacks.push() and SetOfStacks.pop() should behave identically to a single stack (that is, pop() should return the same valuse as it would if there were just a single stack). 
 //FOLLOW UP
-//Implement a functiopm popAt(int index) which performs a pop operation on a specific sub-stack
+//Implement a function popAt(int index) which performs a pop operation on a specific sub-stack
 
+//就是要注意一些实现细节，当某一个栈满了以后，就不能再push了，继续push，需要在后面的栈上push。检测整个栈是否满时，也要遍历所有的子栈。
 #include <iostream>
 
 using namespace std;
