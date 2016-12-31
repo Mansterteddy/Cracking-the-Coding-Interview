@@ -4,7 +4,7 @@
 #include <list>
 using namespace std;
 
-//就是遍历，看是否在遍历完成之前，遍历到给定的顶点
+//就是遍历，看是否在遍历完成之前，遍历到给定的顶点，遍历的方法包括：BFS和DFS。
 const int maxn = 100;
 int graph[maxn][maxn];
 list<int> li;
@@ -44,7 +44,7 @@ bool BFS(int index, int size, int dst)
     return false;
 }
 
-//ARG Counts, ARG Vectors
+//arguments for Counts, arguments for Vectors
 int main(int argc, char** argv)
 {
     if (argc == 1) return 1;

@@ -1,4 +1,6 @@
 //Given a sorted (increasing order) array, write an algorithm to create a binary tree with minimal height. 
+
+//创建平衡二叉树，每次找中点，不断构造node。
 #include <iostream>
 
 using namespace std;
