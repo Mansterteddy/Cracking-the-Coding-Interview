@@ -139,7 +139,7 @@ int main()
     }
     list<Node*> b = a[1];
     
-    //迭代器是指针
+    //迭代器是指针，应当尽可能使用迭代器，而非变量。
     list<Node*>::iterator It;
     for(It = b.begin(); It != b.end(); It++)
     {

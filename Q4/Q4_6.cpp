@@ -1,4 +1,4 @@
-//Design an algorithm and write cide to find the first common ancester of two nodes in a binary tree. 
+//Design an algorithm and write code to find the first common ancester of two nodes in a binary tree. 
 //Avoid stroing additional nodes in a data structure. NOTE: This is not necessarily a binary search tree.
 #include <iostream>
 #include <cstring>

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 
+
 //live和evil就是一对变位词
 
 using namespace std;
