@@ -56,6 +56,7 @@ int get_v(int row, int col, int n)
     return res;
 }
 
+//解法1：向右走还是向下走，不断递归。
 void paths(int n)
 {
     cout<<"Enter"<<endl;

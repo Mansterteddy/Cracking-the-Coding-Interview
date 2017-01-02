@@ -51,6 +51,7 @@ int update_bits(int n, int m, int i, int j)
     return ((n >> (j + 1)) << (j + 1)) | (m<<i) | ret;
 }
 
+//最好使用位操作的方法，效率最高。
 int update_bits_1(int n, int m, int i, int j)
 {
     int max = ~0;
