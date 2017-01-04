@@ -63,7 +63,7 @@ int lis_1(person p[], int n){
         if(p[i].w >= d[k-1]) d[k++] = p[i].w;
         else{
             int j;
-            for(j=k-1; j>=0 && d[j]>p[i].w; --j);//用二分可将复杂度降到O(nlogn)
+            for(j=k-1; j>=0 && d[j]>p[i].w; --j);//用二分可将复杂度降到O(nlogn)，这里是在有序数组中，找到应该插入的位置。方法详解见于interesting problem DP_LIS中
             d[j+1] = p[i].w;
         }
     }

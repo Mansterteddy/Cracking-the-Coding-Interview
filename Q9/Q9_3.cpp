@@ -4,6 +4,7 @@
 //EXAMPLE:
 //Input: find 5 in array (15 16 19 20 25 1 3 4 5 7 10 14)
 //Output: 8 (the index of 5 in the array)
+//此数组只被旋转了一次，前半段保持有序，后半段保持有序，但是不知道从哪个位置分段。
 #include <iostream>
 
 using namespace std;
