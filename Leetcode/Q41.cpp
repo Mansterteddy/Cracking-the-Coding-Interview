@@ -6,7 +6,7 @@
 
 using namespace std;
 
-//找到最大值 找到最小值 然后申请一个数组 进行占位 找到第一个为0的位置
+//此方法首先找到最大值 找到最小值 然后申请一个数组 进行占位 找到第一个为0的位置 在这个过程中，可以将每个int转换为一个8位二进制数，进一步节省空间。
 class Solution2{
     public:
         int firstMissingPositive(vector<int>& nums){
@@ -97,6 +97,8 @@ class Solution2{
         }
 };
 
+//此方法更trick一些，也是一种有趣的排序方法，遍历数组中的每一个元素，将元素交换到对应位置上去，如果对应元素超出数组大小，则不变。最终，数组对应位置的元素和index不相等的位置，就是第一个缺失的正整数。
+//当然交换后，不能直接遍历下一个位置，因为交换来的元素可能是一个新元素，需要继续进行交换，直到不再交换。
 class Solution{
     public:
         int firstMissingPositive(vector<int>& nums)

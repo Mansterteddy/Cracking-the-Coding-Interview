@@ -12,6 +12,8 @@ using namespace std;
  * };
  */
 
+ //这道题的本质就是链表的使用，记住对不同情况的列举，程序就是可以处理多种多样的输入。
+
 struct ListNode{
     int val;
     ListNode *next;

@@ -1,5 +1,6 @@
 //Given a string containing just the characters ( ) { } [ ], determine if the input string is valid
 //The brackets must close in the correct order. 
+//这道题很简单，遍历整个string字符串，当遇到(, [, {时，入栈，当遇到), ], }时，查看栈中前一位置是否是对应的括号，如果不是，return false。最后查看栈中是否为空，如果为空，return true，否则，return false。
 
 #include <iostream>
 #include <vector>
