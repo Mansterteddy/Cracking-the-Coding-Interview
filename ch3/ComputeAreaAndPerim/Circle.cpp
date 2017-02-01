@@ -1,2 +1,0 @@
-/** Implementation of circle class */
-
