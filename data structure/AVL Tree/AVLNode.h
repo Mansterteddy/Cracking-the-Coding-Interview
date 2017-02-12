@@ -1,7 +1,7 @@
 #ifndef AVLNODE_H_
 #define AVLNODE_H_
-
 #include <sstream>
+#include "BTNode.h"
 
 template<typename Item_Type>
 struct AVLNode : public BTNode<Item_Type>
@@ -19,7 +19,7 @@ struct AVLNode : public BTNode<Item_Type>
     {
         std::ostringstream os;
         os<<balance<<" : "<<this->data;
-        return os.str()
+        return os.str();
     }
 };
 
