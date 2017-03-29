@@ -14,7 +14,7 @@ vector<int> multiply_vector(vector<vector<int>> a, vector<int> b)
         {
             res[i] += a[i][j] * b[j]; 
         }
-        //res[i] = res[i] % 100;
+        res[i] = res[i] % 100;
     }
 
     return res;
@@ -39,6 +39,7 @@ vector<vector<int>> multiply_matrix(vector<vector<int>> a, vector<vector<int>> b
             {
                 res[i][j] += a[i][k] * b[k][j];
             }
+            res[i][j] %= 100;
         }
     }
 
