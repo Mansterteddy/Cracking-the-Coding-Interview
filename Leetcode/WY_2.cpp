@@ -1,93 +1,87 @@
+//首先考虑一个问题，假设有数A和B，它们都是m位数字，前n位都一致，后面的位不同，那么如果
+
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cstdint>
+#include <string>
 
 using namespace std;
 
-void recursive(int& res, vector<int> v_1, int index, int final_val, int delim, int count)
-{
-    if(index == v_1.size() - 1)
-    {
-        for(int i = 0; i < 10; ++i)
-        {
-            int final_res = final_val + i * pow(10, v_1[count - 1 - v_1[index]]);
-            if(final_res % delim == 0) res += 1;
-        }
-        return;
-    }
-    else
-    {
-        for(int i = 0; i < 10; ++i)
-        {
-            int final_res = final_val + i * pow(10, v_1[count - 1 - v_1[index]]);
-            recursive(res, v_1, index + 1, final_res, delim, count);
-        }
-    }
-}
-
 int main()
 {
-    char c1[18];
-    long n = 0;
+    string input;
+    int64_t n = 0;
 
-    cin>>c1;
+    cin>>input;
     cin>>n;
 
-    vector<long> v_1;
-
-    long final_val = 0;
-    long count = 0;
-
-    for(int i = 0; c1[i] != '\0'; ++i)
+    int64_t final_res = 0;
+    vector<int> index;
+    for(int i = 0; i < input.length(); ++i)
     {
-        count++;
-        if(c1[i] == 'X')
+        final_res *= 10;
+        if(input[i] == 'X')
         {
-            v_1.push_back(i);
+            index.push_back(input.length() - 1 - i);
         }
         else
         {
-            final_val += c1[i] - 48;
-            final_val *= 10;
+            final_res += input[i] - '0'; 
         }
     }
 
+    int residual = final_res % n;
 
-    long final_val_1 = 0;
+    vector<vector<int64_t>> v1(index.size());
 
-    for(int i = 0; c1[i] != '\0'; ++i)
+    for(int i = 0; i < v1.size(); ++i)
     {
-        final_val_1 *= 10;
-        if(c1[i] == 'X')
+        vector<int64_t> v1_son(n);
+        v1[i] = v1_son;
+    }
+
+    for(int i = 0; i < v1.size(); ++i)
+    {
+        for(int k = 0; k < 10; ++k)
         {
-            final_val_1 += 9;
-            //v_1.push_back(i);
+            int64_t val = k * (int64_t)pow(10, index[i]) % n;
+            if(i == 0)
+            {
+                v1[i][val] += 1;
+            }
+            else
+            {      
+                for(int j = 0; j < n; ++j)
+                {
+                    //cout<<"pass: "<<v1[i-1][j-val]<<" ";
+                    if(j >= val) v1[i][j] += v1[i-1][j - val];
+                    else v1[i][j] += v1[i-1][j + n - val];
+                }
+            }
+
+            
         }
-        else
-        {
-            final_val_1 += c1[i] - 48;
-        }
-        
     }
-
-    while(final_val % n != 0)
-    {
-        final_val++;
-    }
-
-    while(final_val_1 % n != 0)
-    {
-        final_val_1--;
-    }
-
-
-    cout<<final_val<<" "<<final_val_1<<endl;
     
-    long res = (final_val_1 - final_val) / n + 1;
+    if(input == "3X8XXX99X04XXXXX7X")
+    {
+        cout<<"Ans: ";
+        for(int i = 0; i < v1.size(); ++i)
+        {
+            for(int j = 0; j < v1[i].size(); ++j)
+            {
+                cout<<v1[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+    }
 
-    //recursive(res, v_1, 0, final_val, n, count);
 
-    cout<<res<<endl;
+    if(residual == 0) cout<<v1[v1.size()-1][0];
+    else cout<<v1[v1.size()-1][n-residual];
 
     return 0;
+
 }
+
