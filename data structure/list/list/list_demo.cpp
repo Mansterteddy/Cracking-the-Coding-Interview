@@ -1,5 +1,4 @@
 /** Program to demonstrate some features of the STL list */
-
 #ifdef USEKW
 #include "list.h"
 using KW::list;
