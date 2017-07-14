@@ -7,23 +7,23 @@ class iterator
   // Give the parent class access to this class.
   friend class list<Item_Type>;
  
- private:
-  // Data fields
-  /** A reference to the parent list */
-  list<Item_Type>* parent;
-  /** A pointer to the current DNode */
-  typename list<Item_Type>::DNode* current;
-  // Member functions
-  /** Constructs an iterator that references a specific DNode.
-      Note: this constructor is private. Only the list class
-      can create one from scratch.
-      @param my_parent A reference to the list
-      @param position A pointer to the current DNode
-  */
-  iterator(list<Item_Type>* my_parent, DNode* position) :
-    parent(my_parent), current(position) {}
+  private:
+    // Data fields
+    /** A reference to the parent list */
+    list<Item_Type>* parent;
+    /** A pointer to the current DNode */
+    typename list<Item_Type>::DNode* current;
+    // Member functions
+    /** Constructs an iterator that references a specific DNode.
+        Note: this constructor is private. Only the list class
+        can create one from scratch.
+        @param my_parent A reference to the list
+        @param position A pointer to the current DNode
+    */
+    iterator(list<Item_Type>* my_parent, DNode* position) :
+      parent(my_parent), current(position) {}
   
- public:
+  public:
     /** Returns a reference to the currently referenced item.
       @return A reference to the currently referenced item
       @throws std::invalid_argument if this iterator is at end

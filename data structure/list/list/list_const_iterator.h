@@ -5,9 +5,9 @@
 class const_iterator 
 {
   // Give the parent class access to this class
-    friend class list<Item_Type>;
+  friend class list<Item_Type>;
   // Data fields
- private:
+  private:
   /** A pointer to the parent list */
     const list<Item_Type>* parent;
   /** A pointer to the current node */

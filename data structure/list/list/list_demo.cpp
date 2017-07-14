@@ -14,6 +14,7 @@ using std::list;
 #ifndef USEKW
 #include <algorithm>
 #else
+
 namespace KW 
 {
   template <typename iter, typename T>

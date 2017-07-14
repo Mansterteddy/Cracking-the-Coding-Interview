@@ -5,9 +5,11 @@ using std::string;
 using std::cout;
 using std::endl;
 
-namespace KW{
+namespace KW
+{
     template <typename Item_Type>
-    class DLL{
+    class DLL
+    {
         public:
             #include "DNode.h"
     };
@@ -30,37 +32,37 @@ void print_list(DNode* node)
     {
       if (node->next->prev == node) 
       {
-	    cout << " <=> ";
+	       cout << " <=> ";
       } 
       else 
       {
-	    cout << " ==> ";
+	       cout << " ==> ";
       }
       print_list(node->next);
     }
    } 
    else 
    {
-    cout << "NULL";
+      cout << "NULL";
    }
-    cout << endl;
+      cout << endl;
 }
 
 int main()
 {
-  DNode* tom = new DNode("Tom");
-  DNode* dick = new DNode("Dick");
-  DNode* harry = new DNode("Harry");
-  DNode* sam = new DNode("Sam");
+    DNode* tom = new DNode("Tom");
+    DNode* dick = new DNode("Dick");
+    DNode* harry = new DNode("Harry");
+    DNode* sam = new DNode("Sam");
   
-  tom->next = dick;
-  dick->prev = tom;
-  dick->next = harry;
-  harry->prev = dick;
-  harry->next = sam;
-  sam->prev = harry;
+    tom->next = dick;
+    dick->prev = tom;
+    dick->next = harry;
+    harry->prev = dick;
+    harry->next = sam;
+    sam->prev = harry;
   
-  print_list(tom);
+    print_list(tom);
   
     DNode* sharon = new DNode("Sharon");
     // Link new DNode to its neighbors.
@@ -71,7 +73,7 @@ int main()
     // Link to new predecessor.
     sam->prev = sharon;       // Step 4
   
-     print_list(tom);
+    print_list(tom);
   
     //Remove harry
     harry->prev->next = harry->next; // Step 1
@@ -79,4 +81,6 @@ int main()
     delete harry;
   
     print_list(tom);
+
+    return 0;
 }

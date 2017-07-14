@@ -14,6 +14,7 @@ class Divisible_By
         int divisor;
     public:
         Divisible_By(int d) : divisor(d) {}
+        
     bool operator()(int x) 
     {
         return x % divisor == 0;
