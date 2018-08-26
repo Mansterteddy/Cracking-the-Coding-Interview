@@ -19,6 +19,6 @@ int find_index(int *d, int val, int start, int end)
 int main()
 {
     int d[] = {56, 60, 75};
-    cout<<find_index(d, 100, 0, 2)<<endl;
+    cout << find_index(d, 100, 0, 2) << endl;
     return 0;
 }

@@ -13,6 +13,7 @@ int GCD(int a, int b)
         a = b;
         b = d;
     }
+    
     if(a % b == 0)
     {
         return b;
