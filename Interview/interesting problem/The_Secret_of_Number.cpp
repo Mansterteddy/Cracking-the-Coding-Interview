@@ -1,10 +1,11 @@
+//N!的末尾能有多少0，找到最小的N，比如5！末尾有一个0，10！末尾有2个0
+//这个题基于两个发现：1、最后一位是0，是由于有10相乘；2、有10相乘是因为存在5和2，而在阶乘中，2永远比5多，因此有多少个5的倍数，就存在相对应的0。
+
 #include <iostream>
 #include <cmath>
 
 using namespace std;
 
-//N!的末尾能有多少0，找到最小的N，比如5！末尾有一个0，10！末尾有2个0
-//这个题基于两个发现：1、最后一位是0，是由于有10相乘；2、有10相乘是因为存在5和2，而在阶乘中，2永远比5多，因此有多少个5的倍数，就存在相对应的0。
 int val(int value)
 {
     int res = 0;
@@ -16,7 +17,6 @@ int val(int value)
     }
     return res;
 }
-
 
 int tsn(int num_zero)
 {
@@ -31,13 +31,6 @@ int tsn(int num_zero)
             return 0;
         }
         value += val(count);
-        /*if(count % 5 == 0)
-        {
-            cout<<"Count: "<<count<<endl;
-            value += int(log(count) / log(5)) + 1; 
-            cout<<"Value: "<<value<<endl;
-        }
-        else value++;*/
     }
     cout<<"Count: "<<count<<endl;
     return count;

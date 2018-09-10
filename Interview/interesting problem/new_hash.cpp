@@ -8,11 +8,13 @@
 
 using namespace std;
 
-struct point{
+struct point
+{
     double x, y;
 };
 
-class line{
+class line
+{
     public:
         double epsilon, slope, intercept;
         bool bslope;

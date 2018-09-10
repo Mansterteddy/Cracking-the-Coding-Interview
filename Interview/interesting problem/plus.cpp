@@ -1,4 +1,4 @@
-//Implement minus times divide using only plus.
+//Implement minus, times, divide, using only plus.
 
 #include <iostream>
 
@@ -69,7 +69,7 @@ int main()
 
     for(int i = 0; i < 5; i++)
     {
-        cout<<times(a[i], b[i])<<" "<<minuss(a[i], b[i])<<" "<<divide(a[i], b[i])<<endl;
+        cout << times(a[i], b[i]) << " " << minuss(a[i], b[i]) << " " << divide(a[i], b[i]) << endl;
     }
 
     return 0;
