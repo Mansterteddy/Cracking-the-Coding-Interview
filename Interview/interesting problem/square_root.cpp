@@ -2,7 +2,7 @@
 //主要方法包括：二分法、牛顿迭代法和梯度下降法。
 
 #include <iostream>
-#include "math.h"
+#include <cmath>
 
 using namespace std;
 

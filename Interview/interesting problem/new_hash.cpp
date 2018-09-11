@@ -21,45 +21,58 @@ class line
 
     public:
         line(){};
-        line(point p, point q){
+
+        line(point p, point q)
+        {
             epsilon = 0.00001;
-            if(abs(p.x - q.x) > epsilon){
+            if(abs(p.x - q.x) > epsilon)
+            {
                 slope = (p.y - q.y) / (p.x - q.x);
                 intercept = p.y - slope * p.x;
                 bslope = true;
             }
-            else{
+            else
+            {
                 bslope = false;
                 intercept = p.x;
             }
         }
-        int hashcode(){
+
+        int hashcode()
+        {
             int s1 = (int)(slope * 1000);
             int in = (int)(intercept * 1000);
             return s1 * 1000 + in;
         }
 
-        void print(){
+        void print()
+        {
             cout<<"y = "<<slope<<"x + "<<intercept<<endl;
         }
 };
 
-line find_best_line(point *p, int point_num){
+line find_best_line(point *p, int point_num)
+{
     line bestline;
     bool first = true;
     map<int, int> mii;
-    for(int i = 0; i < point_num; i++){
-        for(int j = i + 1; j < point_num; j++){
+    for(int i = 0; i < point_num; i++)
+    {
+        for(int j = i + 1; j < point_num; j++)
+        {
             line l(p[i], p[j]);
-            if(mii.find(l.hashcode()) == mii.end()){
+            if(mii.find(l.hashcode()) == mii.end())
+            {
                 mii[l.hashcode()] = 0;
             }
             mii[l.hashcode()] = mii[l.hashcode()] + 1;
-            if(first){
+            if(first)
+            {
                 bestline = l;
                 first = false;
             }
-            else{
+            else
+            {
                 if(mii[l.hashcode()] > mii[bestline.hashcode()])
                     bestline = l;
             }
@@ -68,12 +81,14 @@ line find_best_line(point *p, int point_num){
     return bestline;
 }
 
-int main(){
+int main()
+{
     srand((unsigned)time(0));
     int graph_size = 100;
     int point_num = 500;
     point *p = new point[point_num];
-    for(int i = 0; i < point_num; i++){
+    for(int i = 0; i < point_num; i++)
+    {
         p[i].x = rand() / double(RAND_MAX) * graph_size;
         p[i].y = rand() / double(RAND_MAX) * graph_size;
     }

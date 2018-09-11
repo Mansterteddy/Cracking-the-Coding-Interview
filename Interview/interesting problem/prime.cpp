@@ -6,7 +6,7 @@
 //3是质数，然后3的倍数全是合数，以此类推，最后看bool数组中谁没被标记，谁就是质数，这样可以避免很多重复操作
 
 #include <iostream>
-#include "math.h"
+#include <cmath>
 using namespace std;
 
 void prime(int n)
