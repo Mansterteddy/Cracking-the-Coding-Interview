@@ -6,6 +6,7 @@
 
 using namespace std;
 
+//Fast Inverse Square Root Algorithm
 float InvSqrt(float x)
 {
     float xhalf = 0.5f * x;
@@ -16,6 +17,7 @@ float InvSqrt(float x)
     return x;
 }
 
+//Fast Inverse Square Root Algorithm with another magic number
 float InvSqrt_1(float x)
 {
     float xhalf = 0.5f * x;
@@ -48,6 +50,7 @@ float InvSqrt_2(float x)
     return y;
 }
 
+//梯度下降法
 float InvSqrt_3(float x)
 {
     float y = 10.0;//初始值
@@ -60,6 +63,7 @@ float InvSqrt_3(float x)
     return y;
 }
 
+//牛顿法，核心在于：使用二阶展开的线性函数来代替原来的函数，目标仍是求取f(x)=0的x值。
 float InvSqrt_4(float x)
 {
     float num = 1.0 / x;
