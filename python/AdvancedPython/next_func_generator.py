@@ -12,3 +12,4 @@ my_string = "Microsoft"
 #next(my_string)
 my_iter = iter(my_string)
 print(next(my_iter))
+print(next(my_iter))
