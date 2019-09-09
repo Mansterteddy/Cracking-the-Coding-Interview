@@ -29,7 +29,7 @@ class Solution{
 };
 
 int main(){
-    cout << "Hello, World!" << endl;
+    cout << "LeetCode 001" << endl;
     int a[] = {2, 7, 11, 15};
     vector<int> nums(a, a+4);
     int target = 26;
