@@ -1,8 +1,6 @@
+#include <string.h>
 #include <iostream>
-#include <string>
-#include <vector>
 #include <map>
-#include <cmath>
 
 using namespace std;
 
@@ -11,8 +9,7 @@ class Solution{
         int lengthOfLongestSubstring(string s){
             int len = s.size();
 
-            if (len == 0) return 0;
-            if (len == 1) return 1;
+            if(len <= 1) return len;
 
             map<char, int> map_res;
             int cur_res = 0;
@@ -43,18 +40,23 @@ class Solution{
 
 int main(){
 
-    cout << "LeetCode 003" << endl;
+    Solution s = Solution();
 
-    Solution so = Solution();
+    string str_a = "abcabcbb";
+    int res_a = s.lengthOfLongestSubstring(str_a);
+    cout << res_a << endl;
 
-    //string a = "abcabcbb";
-    //string a = "bbbbb";
-    //string a = "pwwkew";
-    string a = "abcdda";
+    string str_b = "bbbbb";
+    int res_b = s.lengthOfLongestSubstring(str_b);
+    cout << res_b << endl;
 
-    int res = so.lengthOfLongestSubstring(a);
+    string str_c = "pwwkew";
+    int res_c = s.lengthOfLongestSubstring(str_c);
+    cout << res_c << endl;
 
-    cout << "Res: " << res << endl;
+    string str_d = "abba";
+    int res_d = s.lengthOfLongestSubstring(str_d);
+    cout << res_d << endl;
 
     return 0;
 }
