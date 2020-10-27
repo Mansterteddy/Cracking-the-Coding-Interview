@@ -8,6 +8,8 @@ def fibon(n):
 
     return result
 
+print(fibon(100))
+
 # Generator version
 def fibon(n):
     a = b = 1

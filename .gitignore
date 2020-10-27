@@ -1,5 +1,4 @@
 *.out
 c++/*
 Interview/*
-python/*
 .DS_Store
