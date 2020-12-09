@@ -1,4 +1,6 @@
 *.out
+*.exe
+*.obj
 c++/*
 Interview/*
 .DS_Store
