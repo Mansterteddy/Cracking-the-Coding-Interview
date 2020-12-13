@@ -8,8 +8,8 @@ struct ListNode {
     ListNode *next;
     ListNode(int x) : val(x), next(NULL) {}
 };
- 
-class Solution{
+
+class Solution {
     public:
         ListNode* addTwoNumbers(ListNode* l1, ListNode* l2){
             ListNode* res_start = new ListNode(0);
