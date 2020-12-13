@@ -1,41 +1,37 @@
-#include <string.h>
-#include <iostream>
 #include <map>
+#include <string>
+#include <iostream>
 
 using namespace std;
 
 class Solution{
     public:
-        int lengthOfLongestSubstring(string s){
-            int len = s.size();
+        int lengthOfLongestSubstring(string s) {
+            int final_max_len = 0;
+            int max_len = 0;
+            map<char, int> pos_map;
 
-            if(len <= 1) return len;
+            for(int i = 0; i < s.length(); ++i){
+                auto cur_item = pos_map.find(s[i]);
 
-            map<char, int> map_res;
-            int cur_res = 0;
-            int max_res = 1;
-            for(int i = 0; i < len; ++i){
-                
-                if (map_res.find(s[i]) == map_res.end()){
-                    cur_res += 1;
+                if(cur_item == pos_map.end()){
+                    max_len += 1;
                 }
                 else{
-                    if ((i - cur_res) > map_res[s[i]]){
-                        cur_res += 1;
+                    if((i - max_len) > pos_map[s[i]]){
+                        max_len += 1;                        
                     }
                     else{
-                        cur_res = i - map_res[s[i]];
-
+                        max_len = i - pos_map[s[i]];
                     }
                 }
-                
-                map_res[s[i]] = i;
-                max_res = max(max_res, cur_res);
-
+                pos_map[s[i]] = i;
+                if(max_len > final_max_len)
+                    final_max_len = max_len;
             }
 
-            return max_res;
-        }
+            return final_max_len;
+    }
 };
 
 int main(){
