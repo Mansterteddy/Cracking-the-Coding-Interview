@@ -9,7 +9,7 @@ class Solution{
             
             if(str.length() == 0) return 0;
             
-            long longRes = 0;
+            int64_t longRes = 0;
 
             string chars = " ";
             str = str.erase(0, str.find_first_not_of(chars));
