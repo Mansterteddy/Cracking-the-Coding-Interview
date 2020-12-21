@@ -15,7 +15,10 @@ class MinStack{
 
         void push(int x){
             stack.push_back(x);
-            if(x <= min_stack[min_stack.size()-1]){
+            if(min_stack.size() == 0){
+                min_stack.push_back(x);
+            }
+            else if(x <= min_stack[min_stack.size()-1]){
                 min_stack.push_back(x);
             }
         }
@@ -34,11 +37,14 @@ class MinStack{
         }
 
         int getMin(){
+
             return min_stack[min_stack.size()-1];
         }
 };
 
 int main(){
+
+    cout << "Leetcode Q155." << endl;
 
     MinStack* minStack = new MinStack();
 
