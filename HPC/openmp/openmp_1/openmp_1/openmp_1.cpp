@@ -27,5 +27,13 @@ int main()
         std::cout << i << std::endl;
     }
 
+    #pragma omp parallel for
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            std::cout << i << " " << j << std::endl;
+        }
+        std::cout << "Thread: " << i << std::endl;
+    }
+
     return 0;
 }
