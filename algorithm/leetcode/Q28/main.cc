@@ -24,6 +24,9 @@ class Solution {
 
             while(index <= final_index){
                 if(haystack[index] == needle[0]){
+
+                    if(second_len == 1) return index;
+
                     for(int i = 1; i < second_len; ++i){
                         if(haystack[index + i] == needle[0] && flag == false){
                             next_index = index + i;
@@ -70,7 +73,8 @@ int main(){
 
     first = "abc";
     second = "c";
-    res = s.strStr()
+    res = s.strStr(first, second);
+    cout << res << endl;
 
     return 0;
 }
