@@ -14,23 +14,26 @@ class Solution {
         };
 
         string intToRomanWithRange(int num, int range){
-            if(num == 1 || num == 4 || num == 5 || num == 9){
+            if(num == 0){
+                return "";
+            }
+            else if(num == 1 || num == 4 || num == 5 || num == 9){
                 return roman_map[num * range];
             }
             else if(num < 4){
-                string res = roman_map[1 * range];
-                for(int i = 1; i < num; ++i){
-                    res += res;
+                string res = "";
+                for(int i = 0; i < num; ++i){
+                    res += roman_map[1 * range];
                 }
                 return res;
 
             }
             else{
-                string res = roman_map[5 * range] + roman_map[1 * range];
-                for(int i = 6; i <= num; ++i){
-                    res += res;
+                string res = roman_map[5 * range];
+                for(int i = 5; i < num; ++i){
+                    res += roman_map[1 * range];
                 }
-                return res
+                return res;
             }
         }
 
@@ -44,21 +47,23 @@ class Solution {
             }
 
             if(num > 1000){
-                int left = num % 1000;
-                int val = num / 1000;
+                int val_1000 = num / 1000;
+                num = num % 1000;
 
+                for(int i = 0; i < val_1000; ++i){
+                    res += roman_map[1000];
+                }
             }
-            else{
-                int val_100 = num / 100;
+            
+            int val_100 = num / 100;
+            res += intToRomanWithRange(val_100, 100);
 
+            num = num % 100;
+            int val_10 = num / 10;
+            res += intToRomanWithRange(val_10, 10);
 
-
-                int left_100 = num % 100;
-
-
-            }
-
-
+            num = num % 10;
+            res += intToRomanWithRange(num, 1);
 
             return res;
 
@@ -73,6 +78,17 @@ int main(){
     string res = s.intToRoman(num);
     cout << res << endl;
     
+    num = 4;
+    res = s.intToRoman(num);
+    cout << res << endl;
+
+    num = 58;
+    res = s.intToRoman(num);
+    cout << res << endl;
+
+    num = 1994;
+    res = s.intToRoman(num);
+    cout << res << endl;
     
     return 0;
     

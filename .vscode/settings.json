@@ -13,6 +13,7 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "iostream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iterator": "cpp"
     }
 }
