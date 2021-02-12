@@ -15,7 +15,6 @@ class TrieNode {
 };
 
 class Trie {
-
     private:
         TrieNode* root;
 
@@ -30,7 +29,8 @@ class Trie {
 
             for(auto &a : word){
                 int i = a - 'a';
-                if(!p->child[i]) p->child[i] = new TrieNode();
+                if(!p->child[i]) 
+                    p->child[i] = new TrieNode();
                 p = p->child[i];
             }
             p->isWord = true;
@@ -40,7 +40,8 @@ class Trie {
             TrieNode* p =root;
             for(auto &a : word){
                 int i = a - 'a';
-                if(!p->child[i]) return false;
+                if(!p->child[i]) 
+                    return false;
                 p = p->child[i];
             }
             return p->isWord;
@@ -50,7 +51,8 @@ class Trie {
             TrieNode* p = root;
             for(auto &a : prefix){
                 int i = a - 'a';
-                if(!p->child[i]) return false;
+                if(!p->child[i]) 
+                    return false;
                 p = p->child[i];
             }
             return true;
