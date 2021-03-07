@@ -23,5 +23,17 @@ int main(){
     cout << "pointer_2 use count: " << pointer_2.use_count() << endl;
     cout << "pointer_3 use count: " << pointer_3.use_count() << endl;
 
+    pointer_2.reset();
+    cout << "reset pointer_2: " << endl;
+    cout << "pointer_1 use count: " << pointer_1.use_count() << endl;
+    cout << "pointer 2 use count: " << pointer_2.use_count() << endl;
+    cout << "pointer_3 use count: " << pointer_3.use_count() << endl;
+
+    pointer_3.reset();
+    cout << "reset pointer_3: " << endl;
+    cout << "pointer_1 use count: " << pointer_1.use_count() << endl;
+    cout << "pointer 2 use count: " << pointer_2.use_count() << endl;
+    cout << "pointer_3 use count: " << pointer_3.use_count() << endl;
+    
     return 0;
 }
