@@ -30,9 +30,10 @@ class Solution{
                     nums1_index -= 1;
                 }
             }
-            else{
+
+            if(nums2_index >= 0){
                 while(nums2_index >= 0){
-                    nums1[start_index] = nums1[nums2_index];
+                    nums1[start_index] = nums2[nums2_index];
                     start_index -= 1;
                     nums2_index -= 1;
                 }
@@ -56,7 +57,6 @@ int main(){
         cout << item << " ";
     }
     cout << endl;
-
 
     return 0;
 }
