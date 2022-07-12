@@ -18,7 +18,8 @@ class Solution {
             }
 
             for(int i = 0; i < nums.size(); ++i){
-                if(i != nums[i] - 1){
+
+                if(nums[i] < 0 || i != nums[i] - 1){
                     return i + 1;
                 }
             }
