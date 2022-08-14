@@ -102,6 +102,5 @@ int main(){
         res = res->next;
     }
 
-
     return 0;
 }
